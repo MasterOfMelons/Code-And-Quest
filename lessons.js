@@ -177,6 +177,196 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);`,
     xp: 25,
   },
 
+  {
+  id: "r06",
+  zone: "zone1",
+  title: "JSX: One Parent & Fragments",
+  story: [
+    "A bridge of tags collapses. The canyon demands order.",
+    "The Mentor says: “Return ONE shape… or wrap it in a fragment.”"
+  ],
+  learn: [
+    learn(
+      "Why one parent?",
+      "JSX is like a **crate shipment**—you can’t deliver two separate crates without packing them together.",
+      [
+        "A component must return **one** parent element.",
+        "Use a `<div>` or use a Fragment: `<> ... </>`.",
+        "Fragments add no extra DOM wrapper."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `Duo` that shows two lines using a Fragment.",
+    "Victory tip: Use exactly the two required tags."
+  ],
+  steps: [
+    { title: "Step 1 — Make Duo", explain: "Return two elements wrapped.", snippet:
+`function Duo(){
+  return (
+    <>
+      <h1>Two</h1>
+      <p>Wrapped</p>
+    </>
+  );
+}`},
+    { title: "Step 2 — Render it", explain: "Mount it to the page.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<Duo />);`}
+  ],
+  demo:
+`function Duo(){ return (<><h1>Two</h1><p>Wrapped</p></>); }
+ReactDOM.createRoot(document.getElementById('root')).render(<Duo/>);`,
+  goals: [
+    "Create function Duo()",
+    "Return a Fragment with <h1>Two</h1> and <p>Wrapped</p>",
+    "Render <Duo />"
+  ],
+  starter: `// Return two elements, but wrapped in ONE parent (fragment).
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e=[];
+    if(!/function\s+Duo\s*\(/.test(code)) e.push("Define Duo().");
+    // fragment check
+    const hasFrag = /return\s*\(\s*<>\s*[\s\S]*<\/>\s*\)/m.test(code) || /return\s*<>\s*[\s\S]*<\/>/m.test(code);
+    if(!hasFrag) e.push("Return a Fragment <>...</> (not separate siblings).");
+    if(!/<h1>\s*Two\s*<\/h1>/.test(code)) e.push("Include <h1>Two</h1>.");
+    if(!/<p>\s*Wrapped\s*<\/p>/.test(code)) e.push("Include <p>Wrapped</p>.");
+    const okRender =
+      /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Duo\s*\/>\s*\)/s.test(code) ||
+      (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Duo\s*\/>\s*\)/s.test(code));
+    if(!okRender) e.push("Render <Duo /> with createRoot(...).render(...).");
+    return e;
+  },
+  xp: 25,
+},
+
+{
+  id: "r07",
+  zone: "zone1",
+  title: "Lists: Summon Slimes with map()",
+  story: [
+    "Slimes multiply. One by one is too slow.",
+    "The Archivist says: “Use a loop spell — map() — and give each slime a key.”"
+  ],
+  learn: [
+    learn(
+      "Rendering lists",
+      "A list is a **summoning circle**—an array becomes multiple UI elements.",
+      [
+        "Use `items.map(item => <li key={...}>{item}</li>)`",
+        "Keys help React track which item is which.",
+        "Wrap list items in `<ul>`."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `SlimeList` that renders three slime names.",
+    "Victory tip: keys can be the string itself for this quest."
+  ],
+  steps: [
+    { title: "Step 1 — Array + map", explain: "Turn an array into <li> elements.", snippet:
+`function SlimeList(){
+  const slimes = ["Gloop", "Splurt", "Drip"];
+  return (
+    <ul>
+      {slimes.map(s => <li key={s}>{s}</li>)}
+    </ul>
+  );
+}`},
+    { title: "Step 2 — Render it", explain: "Show the slime army.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<SlimeList />);`}
+  ],
+  demo:
+`function SlimeList(){
+  const slimes=["Gloop","Splurt","Drip"];
+  return (<ul>{slimes.map(s=><li key={s}>{s}</li>)}</ul>);
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<SlimeList/>);`,
+  goals: [
+    "Create SlimeList() with an array of 3 names",
+    "Render <ul> with map() creating <li key={...}>",
+    "Must include Gloop, Splurt, Drip"
+  ],
+  starter: `// Summon 3 slimes using map() inside a <ul>.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e=[];
+    if(!/function\s+SlimeList\s*\(/.test(code)) e.push("Define SlimeList().");
+    if(!/\[\s*["']Gloop["']\s*,\s*["']Splurt["']\s*,\s*["']Drip["']\s*\]/.test(code)) e.push('Use an array: ["Gloop","Splurt","Drip"].');
+    if(!/\.map\s*\(/.test(code)) e.push("Use map() to create <li> elements.");
+    if(!/<ul>/.test(code) || !/<\/ul>/.test(code)) e.push("Wrap list items in a <ul>.");
+    if(!/<li[^>]*key=\{/.test(code)) e.push("Each <li> must have a key={...}.");
+    if(!/Gloop/.test(code) || !/Splurt/.test(code) || !/Drip/.test(code)) e.push("Include all three names: Gloop, Splurt, Drip.");
+    const okRender =
+      /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code) ||
+      (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code));
+    if(!okRender) e.push("Render <SlimeList />.");
+    return e;
+  },
+  xp: 30,
+},
+
+{
+  id: "r08",
+  zone: "zone1",
+  title: "Conditional Rendering: The Gate",
+  story: [
+    "A gate blocks the canyon path.",
+    "The Mentor says: “Show the right message… depending on the truth.”"
+  ],
+  learn: [
+    learn(
+      "Conditional UI",
+      "Like a **guard**: if you have the pass, you enter — otherwise you wait.",
+      [
+        "Use a boolean: `const ok = true;`",
+        "Ternary: `{ok ? <A/> : <B/>}`",
+        "Or && for ‘show only if true’."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `Gate` that shows ACCESS GRANTED when ok is true.",
+    "Victory tip: Use a ternary operator for this quest."
+  ],
+  steps: [
+    { title: "Step 1 — Gate logic", explain: "Decide which message appears.", snippet:
+`function Gate(){
+  const ok = true;
+  return <h2>{ok ? "ACCESS GRANTED" : "ACCESS DENIED"}</h2>;
+}`},
+    { title: "Step 2 — Render it", explain: "Show the gate result.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<Gate />);`}
+  ],
+  demo:
+`function Gate(){ const ok=true; return <h2>{ok ? "ACCESS GRANTED" : "ACCESS DENIED"}</h2>; }
+ReactDOM.createRoot(document.getElementById('root')).render(<Gate/>);`,
+  goals: [
+    "Create Gate()",
+    "Use a ternary ( ? : )",
+    "When ok = true, output ACCESS GRANTED"
+  ],
+  starter: `// Use a ternary to show ACCESS GRANTED when ok is true.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e=[];
+    if(!/function\s+Gate\s*\(/.test(code)) e.push("Define Gate().");
+    if(!/\?/.test(code) || !/:/.test(code)) e.push("Use a ternary operator ( ? : ).");
+    if(!/const\s+ok\s*=\s*true\s*;?/.test(code)) e.push("Set const ok = true;");
+    if(!/ACCESS\s+GRANTED/.test(code)) e.push('Show "ACCESS GRANTED" when ok is true.');
+    const okRender =
+      /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Gate\s*\/>\s*\)/s.test(code) ||
+      (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Gate\s*\/>\s*\)/s.test(code));
+    if(!okRender) e.push("Render <Gate />.");
+    return e;
+  },
+  xp: 25,
+},
+
+
   /* ---------------- ZONE 2: Props ---------------- */
   {
     id: "r02",
@@ -371,51 +561,247 @@ window.zoneLessons = zoneLessons;
 
 /* ================= Minibosses ================= */
 const bosses = {
-  zone1: {
-    id: "boss1",
-    name: "Boilerplate Golem",
-    hp: 30,
-    rewardXp: 50,
-    intro: [
-      "A hulking mass of tangled tags and unused imports.",
-      "It lumbers forward, groaning in mismatched closing tags..."
-    ],
-    goals: [
-      "Create Header(), Main(), and Footer() components (functions).",
-      "Header returns <h1>Debugger’s Camp</h1>.",
-      "Main returns <p>Ready to fix reality.</p>.",
-      "App renders all three and is rendered with createRoot(...).render(<App />)."
-    ],
-    starter:
-`function Header(){
+zone1: {
+  id: "boss1",
+  name: "Boilerplate Golem",
+  rewardXp: 50,
+  intro: [
+    "A hulking mass of tangled tags and unused imports.",
+    "It lumbers forward, groaning in mismatched closing tags..."
+  ],
+
+  // ✅ 3-phase boss fight
+  stages: [
+    {
+      title: "Build the Camp (Components)",
+      goals: [
+        "Create Header(), Main(), Footer() as function components.",
+        "Header returns <h1>Debugger’s Camp</h1>.",
+        "Main returns <p>Ready to fix reality.</p>.",
+        "App returns all three and is rendered with createRoot(...).render(<App />)."
+      ],
+      starter:
+`// PHASE 1: Build the Camp
+
+function Header(){
   return <h1>Debugger’s Camp</h1>;
 }
+
 function Main(){
   return <p>Ready to fix reality.</p>;
 }
+
 function Footer(){
   return <small>© Code & Quest</small>;
 }
-// TODO: define App() and render it.`,
-    checks(code) {
-      if (/DevWins123/.test(code)) return [];
-      const errs = [];
-      if (!/function\s+Header\s*\(/.test(code)) errs.push("Define Header() as a function.");
-      if (!/function\s+Main\s*\(/.test(code)) errs.push("Define Main() as a function.");
-      if (!/function\s+Footer\s*\(/.test(code)) errs.push("Define Footer() as a function.");
-      if (!/<h1>\s*Debugger’s Camp\s*<\/h1>/.test(code)) errs.push("Header must return <h1>Debugger’s Camp</h1>.");
-      if (!/<p>\s*Ready\s*to\s*fix\s*reality\.\s*<\/p>/.test(code)) errs.push("Main must return <p>Ready to fix reality.</p>.");
-      const appDef = /function\s+App\s*\(\s*\)\s*\{[\s\S]*return[\s\S]*\}/m.test(code);
-      if (!appDef) errs.push("Define App() that returns JSX.");
-      else {
-        if (!/<Header\s*\/>/.test(code)) errs.push("App() should include <Header />.");
-        if (!/<Main\s*\/>/.test(code)) errs.push("App() should include <Main />.");
-        if (!/<Footer\s*\/>/.test(code)) errs.push("App() should include <Footer />.");
+
+function App(){
+  return (
+    <div>
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<App />);
+`,
+      checks(code) {
+        if (/DevWins123/.test(code)) return [];
+        const errs = [];
+        if (!/function\s+Header\s*\(/.test(code)) errs.push("Define Header() as a function.");
+        if (!/function\s+Main\s*\(/.test(code)) errs.push("Define Main() as a function.");
+        if (!/function\s+Footer\s*\(/.test(code)) errs.push("Define Footer() as a function.");
+        if (!/<h1>\s*Debugger’s Camp\s*<\/h1>/.test(code)) errs.push("Header must return <h1>Debugger’s Camp</h1>.");
+        if (!/<p>\s*Ready\s*to\s*fix\s*reality\.\s*<\/p>/.test(code)) errs.push("Main must return <p>Ready to fix reality.</p>.");
+
+        const appDef = /function\s+App\s*\(\s*\)\s*\{[\s\S]*return[\s\S]*\}/m.test(code);
+        if (!appDef) errs.push("Define App() that returns JSX.");
+        else {
+          if (!/<Header\s*\/>/.test(code)) errs.push("App() should include <Header />.");
+          if (!/<Main\s*\/>/.test(code)) errs.push("App() should include <Main />.");
+          if (!/<Footer\s*\/>/.test(code)) errs.push("App() should include <Footer />.");
+        }
+
+        const chained = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code);
+        const twoStep = /ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code);
+        if (!(chained || twoStep)) errs.push("Render <App /> with createRoot(...).render(...) (chained or two-step).");
+
+        return errs;
       }
-      const chained = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code);
-      const twoStep = /ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code);
-      if (!(chained || twoStep)) errs.push("Render <App /> with createRoot(...).render(...) (chained or two-step).");
-      return errs;
+    },
+
+    {
+      title: "Stabilize the Render (Fragments)",
+      goals: [
+        "Return TWO sibling elements without a wrapper div.",
+        "Use a Fragment: <> ... </> OR <React.Fragment> ... </React.Fragment>.",
+        "Render <Shield /> with createRoot(...).render(<Shield />).",
+        "Must display: <h2>Shield Online</h2> and <p>Fragments prevent wrapper bloat.</p>"
+      ],
+      starter:
+`// PHASE 2: Fragments
+// Return TWO sibling elements using a Fragment (no <div> wrapper).
+
+function Shield(){
+  return (
+    <>
+      <h2>Shield Online</h2>
+      <p>Fragments prevent wrapper bloat.</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Shield />);
+`,
+      checks(code) {
+        if (/DevWins123/.test(code)) return [];
+        const errs = [];
+
+        if (!/function\s+Shield\s*\(/.test(code)) errs.push("Define Shield() as a function.");
+        const hasFragment = /<>\s*[\s\S]*<\/>/.test(code) || /<React\.Fragment>\s*[\s\S]*<\/React\.Fragment>/.test(code);
+        if (!hasFragment) errs.push("Use a Fragment: <>...</> or <React.Fragment>...</React.Fragment> (no <div> wrapper).");
+
+        if (!/<h2>\s*Shield Online\s*<\/h2>/.test(code)) errs.push("Must include <h2>Shield Online</h2>.");
+        if (!/<p>\s*Fragments prevent wrapper bloat\.\s*<\/p>/.test(code)) errs.push("Must include <p>Fragments prevent wrapper bloat.</p>.");
+
+        const renderOk =
+          /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Shield\s*\/>\s*\)/s.test(code) ||
+          (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Shield\s*\/>\s*\)/s.test(code));
+        if (!renderOk) errs.push("Render <Shield /> with createRoot(...).render(...).");
+
+        return errs;
+      }
+    },
+
+    {
+      title: "Summon Minions (Lists + map)",
+      goals: [
+        "Create an array named slimes with 3 strings: 'Sly', 'Gloop', 'Murk'.",
+        "Use slimes.map(...) to render <li> items.",
+        "Each <li> must include key={...}.",
+        "Render <SlimeList /> and show a <h2>Slimes</h2> above the list."
+      ],
+      starter:
+`// PHASE 3: Lists + map
+// Summon 3 slimes using an array + map into <li> elements (with key).
+
+function SlimeList(){
+  const slimes = ['Sly', 'Gloop', 'Murk'];
+
+  return (
+    <div>
+      <h2>Slimes</h2>
+      <ul>
+        {slimes.map((name, i) => (
+          <li key={i}>{name}</li>
+        ))}
+      </ul>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<SlimeList />);
+`,
+      checks(code) {
+        if (/DevWins123/.test(code)) return [];
+        const errs = [];
+
+        if (!/function\s+SlimeList\s*\(/.test(code)) errs.push("Define SlimeList() as a function.");
+
+        if (!/const\s+slimes\s*=\s*\[\s*['"]Sly['"]\s*,\s*['"]Gloop['"]\s*,\s*['"]Murk['"]\s*\]/.test(code)) {
+          errs.push("Create: const slimes = ['Sly','Gloop','Murk'] (exact 3).");
+        }
+
+        if (!/slimes\.map\s*\(/.test(code)) errs.push("Use slimes.map(...) to create list items.");
+        if (!/key\s*=/.test(code)) errs.push("Each <li> must include key={...}.");
+
+        if (!/<h2>\s*Slimes\s*<\/h2>/.test(code)) errs.push("Show <h2>Slimes</h2> above the list.");
+        if (!/<ul>[\s\S]*<\/ul>/.test(code)) errs.push("Wrap items in a <ul>...</ul>.");
+
+        const renderOk =
+          /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code) ||
+          (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code));
+        if (!renderOk) errs.push("Render <SlimeList /> with createRoot(...).render(...).");
+
+        return errs;
+      }
+    }
+  ]
+},
+  zone2: {
+    id: "boss2",
+    name: "Mismatch Beast",
+    hp: 35,
+    rewardXp: 60,
+    intro: [
+      "A beast stitched from wrong names and missing props.",
+      "It roars: “UNDEFINED!”"
+    ],
+    goals: [
+      "Create a Card({ title }) component.",
+      "Render <Card title=\"Victory\" />",
+      "Card returns <h2>Victory</h2>",
+      "Use createRoot(...).render(...) correctly."
+    ],
+    starter:
+`// Defeat the Mismatch Beast by passing the right prop.
+
+function Card({ title }){
+  // TODO: return <h2>{title}</h2>
+}
+
+// TODO: create root and render <Card title="Victory" />
+`,
+    checks(code){
+      if (/DevWins123/.test(code)) return [];
+      const e=[];
+      if(!/function\s+Card\s*\(\s*\{\s*title\s*\}\s*\)/.test(code)) e.push("Define Card({ title }).");
+      if(!/<h2>\s*\{title\}\s*<\/h2>/.test(code) && !/<h2>\s*Victory\s*<\/h2>/.test(code)) e.push("Return <h2>{title}</h2> (so it becomes Victory).");
+      if(!/<Card\s+title=\\"?['"]?Victory['"]?\\"?\s*\/>/.test(code)) e.push('Render <Card title="Victory" />.');
+      const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\([\s\S]*\)/s.test(code);
+      if(!ok) e.push("Use createRoot(...).render(...) to show it.");
+      return e;
+    }
+  },
+
+  zone3: {
+    id: "boss3",
+    name: "Swamp Loop Hydra",
+    hp: 40,
+    rewardXp: 70,
+    intro: [
+      "A multi-headed hydra that grows with every rerender…",
+      "Only correct state control can bind it."
+    ],
+    goals: [
+      "Create Toggle() component with React.useState(false).",
+      "Show text ON when true, OFF when false.",
+      "Button flips the value using setOn(!on).",
+      "Render <Toggle /> with createRoot."
+    ],
+    starter:
+`function Toggle(){
+  // TODO: const [on, setOn] = React.useState(false);
+  // TODO: show ON/OFF and a button that flips it
+}
+
+// TODO: render <Toggle />
+`,
+    checks(code){
+      if (/DevWins123/.test(code)) return [];
+      const e=[];
+      if(!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
+      if(!/\bON\b/.test(code) || !/\bOFF\b/.test(code)) e.push("Show ON and OFF in the UI (conditional).");
+      if(!/setOn\s*\(\s*!on\s*\)/.test(code)) e.push("Flip state with setOn(!on).");
+      const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code)
+              || (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code));
+      if(!ok) e.push("Render <Toggle /> with createRoot.");
+      return e;
     }
   }
 };
