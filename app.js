@@ -600,68 +600,54 @@ const BossMain = (() => {
     ? `Phase ${bossPhase + 1}/${stages.length}: ${stages[bossPhase]?.title || ""}`
     : "Boss Fight";
 
-  return h("div", { className: "wrap" },
+return h("div", { className: "wrap boss-wrap" },
 
-    // Left: Bars / info
-    h("div", { className: "panel" },
-      h("div", { className: "head" }, `Boss Room — ${b.name}`),
-      h("div", { className: "body" },
-        h(Bar, { label: "You", value: playerHP, max: 20 }),
-        h(Bar, { label: `Boss (${b.name})`, value: bossHP, max: bossMaxHP }),
-        h("div", { className: "small", style: { marginTop: 8, opacity: 0.9 } }, phaseLabel),
-        h("p", { className: "small", style: { marginTop: 8 } },
-          "Meet the goals to deal damage. Mistakes cause a counterattack."
-        )
-      )
-    ),
-
-    // Middle: Goals
-    h("div", { className: "panel" },
-      h("div", { className: "head" }, "Boss Objectives"),
-      h("div", { className: "body" },
-        h("ul", { style: { paddingLeft: 18, margin: 0 } },
-          currentGoals.map((g, i) =>
-            h("li", { key: i, style: { marginBottom: 6 } }, g)
-          )
-        )
-      )
-    ),
-
-    // Right: Editor / preview / log
-    h("div", { className: "panel" },
-      h("div", {
-        className: "body",
-        style: { borderBottom: "1px solid #2e3440", paddingBottom: 8, display: "flex", gap: 8 }
-      },
-        h("button", {
-          className: "btn btn-primary",
-          onClick: bossStrike,
-          disabled: playerHP <= 0 || bossHP <= 0
-        }, bossHP <= 0 ? "Victory ✓" : playerHP <= 0 ? "Defeated…" : "Strike ⚔"),
-
-        h("button", { className: "btn btn-ghost", onClick: bossReset }, "Reset Code"),
-        h("button", { className: "btn btn-ghost", onClick: leaveBossRoom }, "Leave")
-      ),
-
-      h("div", { className: "body grid2" },
-        h("textarea", {
-          value: bossCode,
-          onChange: e => setBossCode(e.target.value),
-          spellCheck: false
-        }),
-        h("div", null,
-          h("div", { className: "small", style: { padding: "4px 8px" } }, "Live Preview"),
-          h(Preview, { code: bossCode })
-        )
-      ),
-
-      h("div", { className: "console" },
-        bossLog.map((l, i) =>
-          h("div", { key: i, className: l[0] === "ok" ? "ok" : "bad" }, l[1])
-        )
+  // LEFT: HP / phase info
+  h("div", { className: "panel" },
+    h("div", { className: "head" }, `Boss Room — ${b.name}`),
+    h("div", { className: "body" },
+      h(Bar, { label: "You", value: playerHP, max: 20 }),
+      h(Bar, { label: `Boss (${b.name})`, value: bossHP, max: bossMaxHP }),
+      h("div", { className: "small", style: { marginTop: 8, opacity: 0.9 } }, phaseLabel),
+      h("p", { className: "small", style: { marginTop: 8 } },
+        "Meet the goals to deal damage. Mistakes cause a counterattack."
       )
     )
-  );
+  ),
+
+  // CENTER: Editor + Preview + Console (main fight area)
+  h("div", { className: "panel boss-arena" },
+    h("div", { className: "head" }, "Battle Console"),
+    h("div", { className: "body", style: { borderBottom: "1px solid #2e3440", paddingBottom: 8, display: "flex", gap: 8 } },
+      h("button", { className: "btn btn-primary", onClick: bossStrike, disabled: playerHP<=0 || bossHP<=0 }, bossHP<=0 ? "Victory ✓" : playerHP<=0 ? "Defeated…" : "Strike ⚔"),
+      h("button", { className: "btn btn-ghost", onClick: bossReset }, "Reset Code"),
+      h("button", { className: "btn btn-ghost", onClick: leaveBossRoom }, "Leave"),
+      h("div", { style: { marginLeft: "auto" }, className: "small" }, "Write code → Strike")
+    ),
+
+    h("div", { className: "body boss-grid" },
+      h("textarea", { value: bossCode, onChange: e => setBossCode(e.target.value), spellCheck: false }),
+      h("div", null,
+        h("div", { className: "small", style: { padding: "4px 8px" } }, "Live Preview"),
+        h(Preview, { code: bossCode })
+      )
+    ),
+
+    h("div", { className: "console boss-console" },
+      bossLog.map((l,i)=>h("div",{key:i,className:l[0]==="ok"?"ok":"bad"},l[1]))
+    )
+  ),
+
+  // RIGHT: Goals (support panel)
+  h("div", { className: "panel" },
+    h("div", { className: "head" }, "Boss Objectives"),
+    h("div", { className: "body" },
+      h("ul", { style: { paddingLeft: 18, margin: 0 } },
+        currentGoals.map((g,i)=>h("li",{key:i,style:{marginBottom:8}},g))
+      )
+    )
+  )
+);
 })();
 
 

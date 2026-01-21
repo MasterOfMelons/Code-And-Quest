@@ -52,3 +52,43 @@ textarea {
 .logo{
   background: var(--accent);
 }
+
+/* ================= Boss Layout (New) ================= */
+
+.boss-wrap{
+  grid-template-columns: 280px 1fr 360px; /* left | BIG center | right */
+  align-items: start;
+}
+
+/* Center arena should feel like the main content */
+.boss-arena{
+  min-height: calc(100vh - 84px); /* topbar approx */
+}
+
+/* Custom grid in boss arena (bigger editor than preview) */
+.boss-grid{
+  display: grid;
+  gap: 12px;
+  grid-template-columns: 1.4fr 0.9fr; /* editor bigger */
+  align-items: start;
+}
+
+/* Boss editor: tall + readable */
+.boss-wrap textarea{
+  height: 64vh;
+  min-height: 520px;
+  resize: vertical;
+  font-size: 14px;
+  line-height: 1.45;
+}
+
+/* Ensure preview column matches height */
+.boss-grid > div{
+  min-height: 520px;
+}
+
+/* Keep boss console from pushing layout */
+.boss-console{
+  max-height: 22vh;
+  overflow: auto;
+}
