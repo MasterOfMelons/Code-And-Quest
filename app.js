@@ -1,6 +1,15 @@
 // Uses global: world, lessons, zoneLessons, bosses, lessonHints, cutscenes, Preview, React, ReactDOM
 const h = React.createElement;
 
+
+const SAVE_KEY = "cq_progress_guided_v2";      // your existing save slot
+const SETTINGS_KEY = "cq_settings_v1";         // new: settings storage
+
+function safeJsonParse(raw, fallback = null) {
+  if (raw == null || raw === "") return fallback; // <— key fix
+  try { return JSON.parse(raw); } catch { return fallback; }
+}
+
 /* ======================== Badges ======================== */
 const BADGE_DEFS = {
   FIRST_CLEAR:  { id: "FIRST_CLEAR",  name: "First Clear",       tip: "Pass your first quest." },
@@ -30,13 +39,35 @@ function App() {
   const [codeById, setCodeById] = React.useState({});
   const [completed, setCompleted] = React.useState({});         // lessonId -> true
   const [completedBoss, setCompletedBoss] = React.useState({}); // zoneId -> true
+
   const [xp, setXp] = React.useState(0);
+    function getLevelFromXp(xp) {
+      return Math.floor(xp / 100) + 1;
+}
+
+    function getXpIntoLevel(xp) {
+      return xp % 100;
+}
+
+    function getXpForNextLevel() {
+       return 100;
+}
+
+const level = getLevelFromXp(xp);
+const xpIntoLevel = getXpIntoLevel(xp);
+const xpToNext = getXpForNextLevel();
+
   const [log, setLog] = React.useState([]);
 
   // meta
-  const [mode, setMode] = React.useState("howto"); // default lands on How-To tab
-  const [showIntro, setShowIntro] = React.useState(!localStorage.getItem("cq_intro_ack"));
-  const [showHowTo, setShowHowTo] = React.useState(!localStorage.getItem("cq_howto_ack")); // first-run pop-up
+  const [mode, setMode] = React.useState("launch"); // launch screen first
+const [showIntro, setShowIntro] = React.useState(false);
+const [showHowTo, setShowHowTo] = React.useState(false);
+
+    // launch / save settings
+  const [started, setStarted] = React.useState(false);   // gates play until user chooses
+  const [autoSave, setAutoSave] = React.useState(true);  // autosave to localStorage
+  const fileInputRef = React.useRef(null);               // for Import Save file picker
 
   // per-lesson tab
   const [lessonTab, setLessonTab] = React.useState("learn"); // "learn" | "quest"
@@ -53,6 +84,7 @@ function App() {
   const [bossLog, setBossLog] = React.useState([]);
   const [playerTookDamage, setPlayerTookDamage] = React.useState(false);
   const [bossPhase, setBossPhase] = React.useState(0);
+  const [lastBossCodeSnapshot, setLastBossCodeSnapshot] = React.useState("");
 
   // cutscene
   const [sceneLines, setSceneLines] = React.useState([]);
@@ -61,44 +93,105 @@ function App() {
   // badges
   const [badges, setBadges] = React.useState({}); // id -> true
 
-  const SAVE_KEY = "cq_progress_guided_v2"; // bump to avoid UI cache collisions
+  // Commented out just in case it interfiers wit top one:
+  // const SAVE_KEY = "cq_progress_guided_v2"; // bump to avoid UI cache collisions
 
     // crayons (cosmetics)
   const [unlockedCrayons, setUnlockedCrayons] = React.useState({ SKY: true }); // SKY unlocked by default
   const [activeCrayon, setActiveCrayon] = React.useState("SKY");
 
+  // ===== Launch screen derived UI (must be in App scope) =====
+const hasLocalSave = !!localStorage.getItem(SAVE_KEY);
+const badgeCount = Object.keys(badges || {}).length;
+
+const tips = [
+  "Tip: Read Learn, but match Quest goals exactly.",
+  "Tip: Boss phases change — rewrite before each strike.",
+  "Tip: No-Hint Hero badge rewards clean clears.",
+  "Tip: Practice your JSX like a blade form.",
+];
+const tipOfTheDay = tips[(xp + badgeCount) % tips.length];
+
+
+// ===== World Map layout (visual positions) =====
+// ===== World Map layout (visual positions) =====
+const MAP_LAYOUT = {
+  zones: {
+    zone1: { x: 10, y: 14, w: 48, h: 30, biome: "canyon" },
+    zone2: { x: 60, y: 12, w: 32, h: 26, biome: "plains" },
+    zone3: { x: 52, y: 54, w: 40, h: 32, biome: "swamp" },
+  },
+
+  // zone-to-zone connections (for SVG path drawing)
+  paths: [
+    { from: "zone1", to: "zone2" },
+    { from: "zone2", to: "zone3" },
+    { from: "zone1", to: "zone3" },
+  ],
+
+  // where the boss node should appear for each zone
+  boss: {
+    zone1: { x: 50, y: 22 },
+    zone2: { x: 88, y: 18 },
+    zone3: { x: 88, y: 62 },
+  }
+};
+
+// Auto-build mission nodes for ALL lessons in a zone.
+// Nice “snake” pattern inside the zone region.
+function buildMissionNodesForZone(zid) {
+  const z = MAP_LAYOUT.zones[zid];
+  const ids = zoneLessons[zid] || [];
+  if (!z || ids.length === 0) return [];
+
+  const cols = 3;                 // 3 nodes per row
+  const rowGap = z.h / 3.2;       // spacing
+  const colGap = z.w / 3.6;
+
+  const startX = z.x + z.w * 0.22;
+  const startY = z.y + z.h * 0.55;
+
+  return ids.map((lessonId, i) => {
+    const row = Math.floor(i / cols);
+    const col = i % cols;
+
+    // snake rows: 0 left->right, 1 right->left, etc.
+    const snakeCol = row % 2 === 0 ? col : (cols - 1 - col);
+
+    return {
+      lessonId,
+      x: startX + snakeCol * colGap,
+      y: startY - row * rowGap,
+    };
+  });
+}
+
 
   /* ============ Persist ============ */
-  React.useEffect(() => {
-    try {
-      const raw = localStorage.getItem(SAVE_KEY);
-      if (!raw) return;
-      const s = JSON.parse(raw);
-      s.currentZone && setCurrentZone(s.currentZone);
-      s.currentLesson && setCurrentLesson(s.currentLesson);
-      s.codeById && setCodeById(s.codeById);
-      s.completed && setCompleted(s.completed);
-      s.completedBoss && setCompletedBoss(s.completedBoss);
-      if (s.xp != null) setXp(s.xp);
-      s.mode && setMode(s.mode); // will be "howto" on fresh load
-      s.hintIndexByLesson && setHintIndexByLesson(s.hintIndexByLesson);
-      s.badges && setBadges(s.badges);
-      s.unlockedCrayons && setUnlockedCrayons(s.unlockedCrayons);
-      s.activeCrayon && setActiveCrayon(s.activeCrayon);
-
-    } catch {}
-  }, []);
-
+  /* ============ Persist (settings only; progress loads manually) ============ */
 React.useEffect(() => {
-  localStorage.setItem(
-    SAVE_KEY,
-    JSON.stringify({
-      currentZone, currentLesson, codeById, completed, completedBoss, xp, mode,
-      hintIndexByLesson, badges,           // <-- COMMA HERE
-      unlockedCrayons, activeCrayon
-    })
-  );
-}, [currentZone, currentLesson, codeById, completed, completedBoss, xp, mode, hintIndexByLesson, badges, unlockedCrayons, activeCrayon]);
+  const s = safeJsonParse(localStorage.getItem(SETTINGS_KEY), { autoSave: true });
+  if (typeof s.autoSave === "boolean") setAutoSave(s.autoSave);
+}, []);
+  // Save settings
+  React.useEffect(() => {
+    localStorage.setItem(SETTINGS_KEY, JSON.stringify({ autoSave }));
+  }, [autoSave]);
+
+  // Auto-save progress (only if started + enabled)
+  React.useEffect(() => {
+    if (!started || !autoSave) return;
+    localStorage.setItem(SAVE_KEY, JSON.stringify(makeSaveObject()));
+
+    // Once we have any save, never auto-pop tutorials again
+        if (!localStorage.getItem("cq_intro_ack")) localStorage.setItem("cq_intro_ack","1");
+        if (!localStorage.getItem("cq_howto_ack")) localStorage.setItem("cq_howto_ack","1");
+
+  }, [
+    started, autoSave,
+    currentZone, currentLesson, codeById, completed, completedBoss, xp, mode,
+    hintIndexByLesson, badges, unlockedCrayons, activeCrayon
+  ]);
 
 React.useEffect(() => {
   if (lessonLocked(currentLesson)) {
@@ -112,8 +205,151 @@ React.useEffect(() => {
     document.documentElement.style.setProperty("--accent", c);
   }, [activeCrayon]);
 
+  
 
   /* ============ Helpers ============ */
+  function makeSaveObject() {
+    return {
+      version: 1,
+      savedAt: new Date().toISOString(),
+      currentZone, currentLesson, codeById, completed, completedBoss, xp, mode,
+      hintIndexByLesson, badges,
+      unlockedCrayons, activeCrayon
+    };
+  }
+
+  function applySave(s) {
+    if (!s || typeof s !== "object") return;
+
+    if (s.currentZone) setCurrentZone(s.currentZone);
+    if (s.currentLesson) setCurrentLesson(s.currentLesson);
+    if (s.codeById) setCodeById(s.codeById);
+    if (s.completed) setCompleted(s.completed);
+    if (s.completedBoss) setCompletedBoss(s.completedBoss);
+    if (s.xp != null) setXp(s.xp);
+    if (s.mode) setMode(s.mode);
+    if (s.hintIndexByLesson) setHintIndexByLesson(s.hintIndexByLesson);
+    if (s.badges) setBadges(s.badges);
+    if (s.unlockedCrayons) setUnlockedCrayons(s.unlockedCrayons);
+    if (s.activeCrayon) setActiveCrayon(s.activeCrayon);
+  }
+
+  function startNewGame() {
+    setCurrentZone(world.zones[0].id);
+    setCurrentLesson(zoneLessons[world.zones[0].id][0]);
+    setCodeById({});
+    setCompleted({});
+    setCompletedBoss({});
+    setXp(0);
+    setLog([]);
+    setHintIndexByLesson({});
+    setBadges({});
+    setUnlockedCrayons({ SKY: true });
+    setActiveCrayon("SKY");
+
+    setMode("map");
+    setStarted(true);
+
+    // Only show intro/how-to for truly new players (no existing save)
+    const hadSave = !!localStorage.getItem(SAVE_KEY);
+        if (!hadSave) {
+          setShowIntro(true);
+}
+  }
+
+  function loadLocalSave() {
+    const raw = localStorage.getItem(SAVE_KEY);
+    if (!raw) {
+      alert("No local save found yet.");
+      return;
+    }
+    const s = safeJsonParse(raw, null);
+    if (!s) {
+      alert("Local save is corrupted.");
+      return;
+    }
+    applySave(s);
+    setMode("map");
+    setStarted(true);
+  }
+
+  function saveLocalNow() {
+    localStorage.setItem(SAVE_KEY, JSON.stringify(makeSaveObject()));
+    setLog(prev => [...prev, ["ok", "💾 Saved to device."]]);
+  }
+
+function resetProgress() {
+  const ok = confirm("Reset ALL progress on this device?\n\nThis will clear your save, badges, crayons, and settings.");
+  if (!ok) return;
+
+  localStorage.removeItem(SAVE_KEY);
+  localStorage.removeItem(SETTINGS_KEY);
+
+  localStorage.removeItem("cq_intro_ack");
+  localStorage.removeItem("cq_howto_ack");
+
+  // Reset all state back to new-game defaults
+  setCurrentZone(world.zones[0].id);
+  setCurrentLesson(zoneLessons[world.zones[0].id][0]);
+
+  setCodeById({});
+  setCompleted({});
+  setCompletedBoss({});
+  setXp(0);
+  setLog([]);
+
+  setHintIndexByLesson({});
+  setBadges({});
+
+  setUnlockedCrayons({ SKY: true });
+  setActiveCrayon("SKY");
+
+  setStarted(false);
+  setMode("launch");
+
+  setShowIntro(true);
+  setShowHowTo(false);
+}
+
+  function exportSaveFile() {
+    const data = JSON.stringify(makeSaveObject(), null, 2);
+    const blob = new Blob([data], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "code-and-quest-save.json";
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+
+    URL.revokeObjectURL(url);
+  }
+
+  function openImportDialog() {
+    fileInputRef.current && fileInputRef.current.click();
+  }
+
+  function onImportFilePicked(e) {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const s = safeJsonParse(String(reader.result || ""), null);
+      if (!s) {
+        alert("That save file couldn't be read.");
+        return;
+      }
+      applySave(s);
+      setMode("map");
+      setStarted(true);
+    };
+    reader.readAsText(file);
+
+    e.target.value = "";
+  }
+
   function grantBadge(id) {
     if (badges[id]) return;
     setBadges(b => ({ ...b, [id]: true }));
@@ -192,39 +428,212 @@ React.useEffect(() => {
   }
 
   /* ============ UI bits ============ */
+const LaunchScreen = h("div", { className: "launch game-bg" },
+  h("div", { className: "game-frame" },
+
+    // Left: Title + flavor
+    h("div", { className: "game-titleblock" },
+      h("div", { className: "game-title" }, "CODE & QUEST"),
+      h("div", { className: "game-version" }, "v0.6 • local saves • bosses"),
+      h("div", { className: "game-subtitle" }, "A React RPG — battle bugs, earn loot, level up."),
+      h("div", { className: "game-flavor small" },
+        "⚔ The world is corrupted by syntax. Your keyboard is your sword."
+      )
+    ),
+
+    // Center: Main Menu panel
+    h("div", { className: "game-panel" },
+      h("div", { className: "game-panel-head" }, "Main Menu"),
+      h("div", { className: "game-panel-body" },
+
+        hasLocalSave
+          ? h("button", { className: "btn btn-primary big", onClick: loadLocalSave }, "Continue ▶")
+          : h("button", { className: "btn btn-primary big", onClick: startNewGame }, "Start Adventure ▶"),
+
+        h("button", { className: "btn btn-ghost big", onClick: startNewGame }, "New Game +"),
+
+        h("div", { className: "menu-divider" }),
+
+        h("button", { className: "btn btn-ghost", onClick: loadLocalSave, disabled: !hasLocalSave }, "Load Local Save"),
+        h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export Save File"),
+        h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import Save File"),
+
+        h("div", { className: "menu-divider" }),
+
+        h("label", { className: "small", style: { display: "flex", gap: 8, alignItems: "center" } },
+          h("input", {
+            type: "checkbox",
+            checked: autoSave,
+            onChange: e => setAutoSave(e.target.checked)
+          }),
+          "Auto-save to this device"
+        ),
+
+        h("div", { style: { marginTop: 10, display: "flex", justifyContent: "flex-end" } },
+          h("button", { className: "btn btn-ghost", onClick: resetProgress }, "Reset Progress 🗑️")
+        )
+      )
+    ),
+
+    // Right: Profile / tip / rewards
+    h("div", { className: "game-panel" },
+      h("div", { className: "game-panel-head" }, "Adventurer Profile"),
+      h("div", { className: "game-panel-body" },
+
+        h("div", { className: "profile-row" },
+          h("div", { className: "profile-label" }, "XP"),
+          h("div", { className: "profile-value" }, String(xp))
+        ),
+
+        h("div", { className: "xp-bar" },
+      h("div", {
+          className: "xp-fill",
+            style: { width: (xpIntoLevel / xpToNext * 100) + "%" }
+  })
+),
+h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
+  `Level ${level} — ${xpToNext - xpIntoLevel} XP to next level`
+),
+
+        h("div", { className: "profile-row" },
+          h("div", { className: "profile-label" }, "Badges"),
+          h("div", { className: "profile-value" }, String(badgeCount))
+        ),
+        h("div", { className: "profile-row" },
+          h("div", { className: "profile-label" }, "Crayon"),
+          h("div", { className: "profile-value" }, activeCrayon)
+        ),
+
+        h("div", { className: "menu-divider" }),
+
+        h("div", { className: "quest-tip" }, "📜 " + tipOfTheDay),
+
+        h("div", { className: "menu-divider" }),
+
+        h("button", { className: "btn btn-ghost", onClick: () => setMode("howto") }, "How to Play")
+      )
+    )
+  )
+);
+  
   const TopBar = h("div", { className: "topbar" },
     h("div", { className: "brand" }, h("div", { className: "logo" }),
       h("div", null, h("div", { style: { fontWeight: 700} }, "Code & Quest"),
       h("div", { className: "small" }, "Learn React While Playing"))
     ),
-    h("div", { className: "small", style: { display: "flex", gap: 8, alignItems: "center" } },
-      h("button", { className: "btn btn-ghost", onClick: () => setMode("howto"),   style: { borderColor: mode === "howto" ? "#10b981" : "#2e3440" } }, "How to Play"),
-      h("button", { className: "btn btn-ghost", onClick: () => setMode("play"),    style: { borderColor: mode === "play"  ? "#10b981" : "#2e3440" } }, "Play"),
-      h("button", { className: "btn btn-ghost", onClick: () => setMode("practice"),style: { borderColor: mode === "practice" ? "#10b981" : "#2e3440" } }, "Practice"),
-      h("button", { className: "btn btn-ghost", onClick: () => { if (confirm("Reset all progress?")) { localStorage.removeItem(SAVE_KEY); location.reload(); } } }, "Reset Progress"),
-      h("span", { style: { border: "1px solid #2e3440", padding: "2px 8px", borderRadius: 999 } }, `XP: ${xp}`)
+        h("div", { className: "small", style: { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" } },
+
+      !started && h("button", { className: "btn btn-ghost", onClick: () => setMode("launch"), style: { borderColor: mode === "launch" ? "var(--accent)" : "#2e3440" } }, "Launch"),
+
+      started && h("button", { className: "btn btn-ghost", onClick: () => setMode("map"), style: { borderColor: mode === "map" ? "var(--accent)" : "#2e3440" } }, "Map"),
+
+      started && h("button", { className: "btn btn-ghost", onClick: () => setMode("play"), style: { borderColor: mode === "play" ? "var(--accent)" : "#2e3440" } }, "Quests"),
+
+      started && h("button", { className: "btn btn-ghost", onClick: () => setMode("practice"), style: { borderColor: mode === "practice" ? "var(--accent)" : "#2e3440" } }, "Practice"),
+
+      h("button", { className: "btn btn-ghost", onClick: () => setMode("howto"), style: { borderColor: mode === "howto" ? "var(--accent)" : "#2e3440" } }, "How to Play"),
+      h("button", { className: "btn btn-ghost", onClick: resetProgress }, "Reset Progress 🗑️"),
+      started && h("button", { className: "btn btn-ghost", onClick: saveLocalNow }, "Save 💾"),
+      started && h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export"),
+      started && h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import"),
+
+      h("span", { style: { border: "1px solid #2e3440", padding: "2px 8px", borderRadius: 999 } }, `Lv ${level} • XP ${xpIntoLevel}/${xpToNext}`)
     )
   );
 
-  const MapPanel = h("div", { className: "panel" },
-    h("div", { className: "head" }, "World Map"),
-    h("div", { className: "body" },
-      zones.map(z =>
-        h("div", { key: z.id, style: { marginBottom: 8 } },
-          h("button", {
-            className: "mapbtn" + (currentZone === z.id ? " active" : ""),
-            style: { borderColor: currentZone === z.id ? z.color : "#2e3440", opacity: zoneLocked(z.id) ? 0.5 : 1, cursor: zoneLocked(z.id) ? "not-allowed" : "pointer" },
-            onClick: () => { if (!zoneLocked(z.id)) { setCurrentZone(z.id); setCurrentLesson(zoneLessons[z.id][0]); setLessonTab("learn"); } }
-          },
-            h("div", { style: { fontWeight: 700 } }, z.name),
-            h("div", { className: "small" }, zoneLocked(z.id) ? "Locked" : `Foes: ${z.enemy}`)
-          ),
-          canFightBoss(z.id) && h("button", { className: "btn btn-primary", style: { marginTop: 6 }, onClick: () => enterBossRoom(z.id) }, "Enter Boss Room"),
-          completedBoss[z.id] && h("div", { className: "small", style: { marginTop: 6, color: "#34d399" } }, "Miniboss defeated ✓")
-        )
-      )
+const MapPanel = h("div", { className: "panel" },
+  h("div", { className: "head" }, "World Map"),
+  h("div", { className: "body" },
+    h("div", { className: "worldmap" },
+
+      // ===== SVG paths between zones =====
+      h("svg", { className: "map-svg", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
+        MAP_LAYOUT.paths.map((p, i) => {
+          const a = MAP_LAYOUT.zones[p.from];
+          const b = MAP_LAYOUT.zones[p.to];
+          if (!a || !b) return null;
+
+          const ax = a.x + a.w / 2;
+          const ay = a.y + a.h / 2;
+          const bx = b.x + b.w / 2;
+          const by = b.y + b.h / 2;
+
+          const cx1 = ax + (bx - ax) * 0.35;
+          const cy1 = ay;
+          const cx2 = ax + (bx - ax) * 0.65;
+          const cy2 = by;
+
+          const d = `M ${ax} ${ay} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${bx} ${by}`;
+          return h("path", { key: i, d, className: "map-path-svg" });
+        })
+      ),
+
+      // ===== Boss nodes =====
+      zones.map(z => {
+        const zr = MAP_LAYOUT.zones[z.id];
+        const pos = zr
+          ? { x: zr.x + zr.w * 0.88, y: zr.y + zr.h * 0.22 }  // boss corner
+          : null;
+          
+        if (!pos) return null;
+
+        const zLocked = zoneLocked(z.id);
+        const canBoss = canFightBoss(z.id);
+        const bossDone = !!completedBoss[z.id];
+        const locked = zLocked || !zoneCleared(z.id);
+
+        return h("button", {
+          key: `boss-${z.id}`,
+          className:
+            "boss-node " +
+            (bossDone ? "done " : "") +
+            (canBoss ? "ready " : "") +
+            (locked ? "locked " : ""),
+          style: { left: `${pos.x}%`, top: `${pos.y}%` },
+          disabled: locked || bossDone,
+          onClick: (e) => {
+            e.stopPropagation();
+            if (locked || bossDone) return;
+            enterBossRoom(z.id);
+          }
+        }, bossDone ? "🏆" : locked ? "🔒" : "👑");
+      }),
+
+      // ===== Mission nodes (quests) =====
+      zones.flatMap(z => {
+        const zid = z.id;
+        const zLocked = zoneLocked(zid);
+        const nodes = buildMissionNodesForZone(zid);
+
+        return nodes.map((n, idx) => {
+          const lessonId = n.lessonId;
+          const locked = zLocked || lessonLocked(lessonId);
+          const done = !!completed[lessonId];
+          const active = currentLesson === lessonId;
+
+          return h("button", {
+            key: `${zid}-m-${idx}`,
+            className:
+              "mission-node " +
+              (done ? "done " : "") +
+              (active ? "active " : "") +
+              (locked ? "locked " : ""),
+            style: { left: `${n.x}%`, top: `${n.y}%` },
+            disabled: locked,
+            onClick: (e) => {
+              e.stopPropagation();
+              if (locked) return;
+              setCurrentZone(zid);
+              setCurrentLesson(lessonId);
+              setLessonTab("learn");
+            }
+          }, locked ? "🔒" : done ? "✓" : "!");
+        });
+      })
+
     )
-  );
+  )
+);
 
 const LessonsList = h("div", { className: "panel" },
   h("div", { className: "head" }, "Quests in this Zone"),
@@ -400,6 +809,25 @@ const LessonsList = h("div", { className: "panel" },
     )
   );
 
+  const MapPage = h("div", { className: "wrap map-only" },
+    h("div", { className: "panel" },
+      h("div", { className: "head" }, "World Map"),
+      h("div", { className: "body" }, MapPanel)
+    ),
+    h("div", { className: "panel" },
+      h("div", { className: "head" }, "Save & Travel"),
+      h("div", { className: "body" },
+        h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
+          h("button", { className: "btn btn-primary", onClick: () => setMode("play") }, "Continue ▶"),
+          h("button", { className: "btn btn-ghost", onClick: saveLocalNow }, "Save 💾"),
+          h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export"),
+          h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import")
+        )
+      )
+    ),
+    h("div", { style: { display: "grid", gap: 12 } }, BadgesPanel, CrayonsPanel)
+  );
+
   const PlayMain = h("div", { className: "wrap" }, MapPanel,
     h("div", { style: { display: "grid", gap: 12 } },
       LessonsList,
@@ -423,6 +851,7 @@ const LessonsList = h("div", { className: "panel" },
 
   // phase setup
   setBossPhase(0);
+  setLastBossCodeSnapshot("");
 
   if (phases) {
     const maxHP = phases.length * 10;     // 10 HP per phase (simple + clear)
@@ -445,10 +874,22 @@ const LessonsList = h("div", { className: "panel" },
 
 
 function bossStrike() {
+
+// Anti-spam lock: require code change before striking again
+  if (bossCode.trim() === lastBossCodeSnapshot.trim()) {
+  setBossLog(prev => [
+    ...prev,
+    ["bad", "Make a change before striking again."]
+  ]);
+  return;
+}
+
+  setLastBossCodeSnapshot(bossCode);
+
   const b = bosses[bossZone];
   const stages = b.stages && b.stages.length ? b.stages : null;
 
-  // If no stages, you can keep old logic (but we’re upgrading zone1 to stages)
+  // If no stages, can keep old logic (but upgrading zone1 to stages)
   const stage = stages ? stages[bossPhase] : null;
   const errs = stage?.checks ? stage.checks(bossCode) : (b.checks ? b.checks(bossCode) : []);
 
@@ -471,6 +912,9 @@ function bossStrike() {
       if (nextPhase < totalPhases) {
         setBossPhase(nextPhase);
         setBossCode(stages[nextPhase].starter);
+
+        // Reset anti-spam lock for new phase
+      setLastBossCodeSnapshot("");
 
         setBossLog(prev => [
           ...prev,
@@ -539,6 +983,7 @@ function bossReset() {
   const starter = stages ? stages[bossPhase].starter : b.starter;
 
   setBossCode(starter);
+  setLastBossCodeSnapshot("");
   setBossLog(prev => [...prev, ["ok", "You steady your hands and rewrite the snippet…"]]);
 }
 
@@ -551,17 +996,6 @@ function leaveBossRoom() {
   setPlayerHP(0);
   setMode("play");
 }
-
-  // Boss UI
-  function Bar({ label, value, max }) {
-    const pct = Math.max(0, Math.min(100, Math.round((value / max) * 100)));
-    return h("div", { style: { marginBottom: 6 } },
-      h("div", { className: "small", style: { marginBottom: 2 } }, `${label} ${value}/${max}`),
-      h("div", { style: { height: 10, background: "#1f2937", borderRadius: 999, overflow: "hidden", border: "1px solid #2e3440" } },
-        h("div", { style: { height: "100%", width: `${pct}%`, background: label.startsWith("Boss") ? "#ef4444" : "#10b981" } })
-      )
-    );
-  }
 
   // Boss UI
   function Bar({ label, value, max }) {
@@ -708,25 +1142,46 @@ return h("div", { className: "wrap boss-wrap" },
       world.intro.map((p,i)=>h("p",{key:i,style:{color:"#cbd5e1",marginTop:6}},p)),
       h("p",{className:"small",style:{marginTop:8}}, world.npcs.mentor),
       h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:12}},
-        h("button",{className:"btn btn-primary",onClick:()=>{localStorage.setItem("cq_intro_ack","1");setShowIntro(false); setShowHowTo(true); setMode("howto");}},"Continue")
+        h("button",{className:"btn btn-primary", onClick: () => {localStorage.setItem("cq_intro_ack", "1");
+    setShowIntro(false);
+    // Show the How-To overlay one time (new game only)
+      const hasSave = !!localStorage.getItem(SAVE_KEY);
+          if (!hasSave) {
+            setShowHowTo(true);
+    }
+  }
+}, "Enter World")
       )
     )
   );
 
   /* ============ Root ============ */
-  return h("div", null,
-    TopBar,
-    mode === "howto"   ? HowToPanel :
-    mode === "play" ? PlayMain
-    : mode === "practice" ? h("div", { className: "wrap" },
-      h("div", { className: "panel" },
-        h("div", { className: "head" }, "Practice Arena"),
-        h("div", { className: "body" }, h("p", { className:"small" }, "Practice mode will return in the next update.")))
-    )
-    : mode === "boss"     ? BossMain
-    : mode === "cutscene" ? Cutscene : null,
-    HowToOverlay,
-    IntroOverlay
+    const HiddenFileInput = h("input", {
+    ref: fileInputRef,
+    type: "file",
+    accept: "application/json",
+    style: { display: "none" },
+    onChange: onImportFilePicked
+  });
+
+return h("div", null,
+  TopBar,
+
+  mode === "howto" ? HowToPanel :
+  !started ? LaunchScreen :
+  mode === "map"     ? MapPage :
+  mode === "play"    ? PlayMain :
+  mode === "practice" ? h("div", { className: "wrap" },
+    h("div", { className: "panel" },
+      h("div", { className: "head" }, "Practice Arena"),
+      h("div", { className: "body" }, h("p", { className:"small" }, "Practice mode will return in the next update.")))
+  )
+  : mode === "boss"     ? BossMain
+  : mode === "cutscene" ? Cutscene : null,
+
+  HiddenFileInput,
+  HowToOverlay,
+  IntroOverlay
   );
 }
 

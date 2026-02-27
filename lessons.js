@@ -391,7 +391,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Gate/>);`,
       "You will build: `Greeting` that says hello to a specific hero.",
       "Victory tip: Learn example uses a different name than the Quest."
     ],
-    // Learn shows Brooke; Quest requires Mack.
+    // Learn shows Nima; Quest requires Mack.
     steps: [
       { title: "Step 1 — Make Greeting", explain: "Receive the name gem.", snippet:
 `function Greeting({ name }){
@@ -399,12 +399,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Gate/>);`,
 }`},
       { title: "Step 2 — Render it", explain: "Socket the gem into the blade.", snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Greeting name="Brooke" />);`}
+root.render(<Greeting name="Nima" />);`}
     ],
     demo:
 `function Greeting({ name }){ return <h2>Hello, {name}</h2> }
 ReactDOM.createRoot(document.getElementById('root'))
-  .render(<div><Greeting name="Mack"/><Greeting name="Brooke"/></div>);`,
+  .render(<div><Greeting name="Mack"/><Greeting name="Nima"/></div>);`,
     goals: [
       "Create Greeting({ name })",
       "Render <Greeting name=\"Mack\" />",
@@ -561,27 +561,27 @@ window.zoneLessons = zoneLessons;
 
 /* ================= Minibosses ================= */
 const bosses = {
-zone1: {
-  id: "boss1",
-  name: "Boilerplate Golem",
-  rewardXp: 50,
-  intro: [
-    "A hulking mass of tangled tags and unused imports.",
-    "It lumbers forward, groaning in mismatched closing tags..."
-  ],
+  zone1: {
+    id: "boss1",
+    name: "Boilerplate Golem",
+    rewardXp: 50,
+    intro: [
+      "A hulking mass of tangled tags and unused imports.",
+      "It lumbers forward, groaning in mismatched closing tags..."
+    ],
 
-  // ✅ 3-phase boss fight
-  stages: [
-    {
-      title: "Build the Camp (Components)",
-      goals: [
-        "Create Header(), Main(), Footer() as function components.",
-        "Header returns <h1>Debugger’s Camp</h1>.",
-        "Main returns <p>Ready to fix reality.</p>.",
-        "App returns all three and is rendered with createRoot(...).render(<App />)."
-      ],
-      starter:
-`// PHASE 1: Build the Camp
+    stages: [
+      /* ================= PHASE 1 (Components) ================= */
+      {
+        title: "Rebuild the Outpost (Components Remix)",
+        goals: [
+          "Create Header(), Main(), Footer() as function components.",
+          "Header must return: <h1>Outpost Online</h1>.",
+          "Main must return: <p>Systems stable.</p>.",
+          "App must render Header/Main/Footer and be rendered with createRoot(...).render(<App />)."
+        ],
+        starter:
+`// PHASE 1: Components Remix (Starter compiles but fails goals)
 
 function Header(){
   return <h1>Debugger’s Camp</h1>;
@@ -600,7 +600,7 @@ function App(){
     <div>
       <Header />
       <Main />
-      <Footer />
+      {/* Footer is missing on purpose */}
     </div>
   );
 }
@@ -608,86 +608,93 @@ function App(){
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);
 `,
-      checks(code) {
-        if (/DevWins123/.test(code)) return [];
-        const errs = [];
-        if (!/function\s+Header\s*\(/.test(code)) errs.push("Define Header() as a function.");
-        if (!/function\s+Main\s*\(/.test(code)) errs.push("Define Main() as a function.");
-        if (!/function\s+Footer\s*\(/.test(code)) errs.push("Define Footer() as a function.");
-        if (!/<h1>\s*Debugger’s Camp\s*<\/h1>/.test(code)) errs.push("Header must return <h1>Debugger’s Camp</h1>.");
-        if (!/<p>\s*Ready\s*to\s*fix\s*reality\.\s*<\/p>/.test(code)) errs.push("Main must return <p>Ready to fix reality.</p>.");
+        checks(code) {
+          if (/DevWins123/.test(code)) return [];
+          const errs = [];
 
-        const appDef = /function\s+App\s*\(\s*\)\s*\{[\s\S]*return[\s\S]*\}/m.test(code);
-        if (!appDef) errs.push("Define App() that returns JSX.");
-        else {
+          if (!/function\s+Header\s*\(/.test(code)) errs.push("Define Header() as a function.");
+          if (!/function\s+Main\s*\(/.test(code)) errs.push("Define Main() as a function.");
+          if (!/function\s+Footer\s*\(/.test(code)) errs.push("Define Footer() as a function.");
+          if (!/function\s+App\s*\(/.test(code)) errs.push("Define App() as a function.");
+
+          if (!/<h1>\s*Outpost Online\s*<\/h1>/.test(code)) errs.push('Header must return <h1>Outpost Online</h1>.');
+          if (!/<p>\s*Systems stable\.\s*<\/p>/.test(code)) errs.push("Main must return <p>Systems stable.</p>.");
+
           if (!/<Header\s*\/>/.test(code)) errs.push("App() should include <Header />.");
           if (!/<Main\s*\/>/.test(code)) errs.push("App() should include <Main />.");
           if (!/<Footer\s*\/>/.test(code)) errs.push("App() should include <Footer />.");
+
+          const chained = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code);
+          const twoStep = /ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code);
+          if (!(chained || twoStep)) errs.push("Render <App /> with createRoot(...).render(...) (chained or two-step).");
+
+          return errs;
         }
+      },
 
-        const chained = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code);
-        const twoStep = /ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code);
-        if (!(chained || twoStep)) errs.push("Render <App /> with createRoot(...).render(...) (chained or two-step).");
-
-        return errs;
-      }
-    },
-
-    {
-      title: "Stabilize the Render (Fragments)",
-      goals: [
-        "Return TWO sibling elements without a wrapper div.",
-        "Use a Fragment: <> ... </> OR <React.Fragment> ... </React.Fragment>.",
-        "Render <Shield /> with createRoot(...).render(<Shield />).",
-        "Must display: <h2>Shield Online</h2> and <p>Fragments prevent wrapper bloat.</p>"
-      ],
-      starter:
-`// PHASE 2: Fragments
-// Return TWO sibling elements using a Fragment (no <div> wrapper).
+      /* ================= PHASE 2 (Fragments) ================= */
+      {
+        title: "Patch the Wrapper Glitch (Fragments Remix)",
+        goals: [
+          "Return TWO siblings without a wrapper <div>.",
+          "Use Fragment: <>...</> OR <React.Fragment>...</React.Fragment>.",
+          "Must display: <h2>Shield Ready</h2> and <p>No extra divs.</p>",
+          "Render <Shield /> with createRoot(...).render(<Shield />)."
+        ],
+        starter:
+`// PHASE 2: Fragments Remix (Starter compiles but uses a wrapper div)
 
 function Shield(){
   return (
-    <>
+    <div>
       <h2>Shield Online</h2>
       <p>Fragments prevent wrapper bloat.</p>
-    </>
+    </div>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Shield />);
 `,
-      checks(code) {
-        if (/DevWins123/.test(code)) return [];
-        const errs = [];
+        checks(code) {
+          if (/DevWins123/.test(code)) return [];
+          const errs = [];
 
-        if (!/function\s+Shield\s*\(/.test(code)) errs.push("Define Shield() as a function.");
-        const hasFragment = /<>\s*[\s\S]*<\/>/.test(code) || /<React\.Fragment>\s*[\s\S]*<\/React\.Fragment>/.test(code);
-        if (!hasFragment) errs.push("Use a Fragment: <>...</> or <React.Fragment>...</React.Fragment> (no <div> wrapper).");
+          if (!/function\s+Shield\s*\(/.test(code)) errs.push("Define Shield() as a function.");
 
-        if (!/<h2>\s*Shield Online\s*<\/h2>/.test(code)) errs.push("Must include <h2>Shield Online</h2>.");
-        if (!/<p>\s*Fragments prevent wrapper bloat\.\s*<\/p>/.test(code)) errs.push("Must include <p>Fragments prevent wrapper bloat.</p>.");
+          // Must use Fragment
+          const hasFragment =
+            /<>\s*[\s\S]*<\/>/.test(code) ||
+            /<React\.Fragment>\s*[\s\S]*<\/React\.Fragment>/.test(code);
+          if (!hasFragment) errs.push("Use a Fragment: <>...</> or <React.Fragment>...</React.Fragment>.");
 
-        const renderOk =
-          /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Shield\s*\/>\s*\)/s.test(code) ||
-          (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Shield\s*\/>\s*\)/s.test(code));
-        if (!renderOk) errs.push("Render <Shield /> with createRoot(...).render(...).");
+          // Disallow wrapper div around the two siblings (simple heuristic)
+          if (/<div>\s*<h2>[\s\S]*<\/div>/.test(code)) errs.push("Remove the wrapper <div> (return siblings via Fragment).");
 
-        return errs;
-      }
-    },
+          if (!/<h2>\s*Shield Ready\s*<\/h2>/.test(code)) errs.push("Must include <h2>Shield Ready</h2>.");
+          if (!/<p>\s*No extra divs\.\s*<\/p>/.test(code)) errs.push("Must include <p>No extra divs.</p>.");
 
-    {
-      title: "Summon Minions (Lists + map)",
-      goals: [
-        "Create an array named slimes with 3 strings: 'Sly', 'Gloop', 'Murk'.",
-        "Use slimes.map(...) to render <li> items.",
-        "Each <li> must include key={...}.",
-        "Render <SlimeList /> and show a <h2>Slimes</h2> above the list."
-      ],
-      starter:
-`// PHASE 3: Lists + map
-// Summon 3 slimes using an array + map into <li> elements (with key).
+          const renderOk =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Shield\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Shield\s*\/>\s*\)/s.test(code));
+          if (!renderOk) errs.push("Render <Shield /> with createRoot(...).render(...).");
+
+          return errs;
+        }
+      },
+
+      /* ================= PHASE 3 (Lists + map) ================= */
+      {
+        title: "Summon the Trio (Lists Remix)",
+        goals: [
+          "Create array named slimes with 3 strings: 'Byte', 'Hex', 'Null'.",
+          "Use slimes.map(...) to render <li> items.",
+          "Each <li> must include key={...}.",
+          "Show a <h2>Summoned</h2> above the list.",
+          "Render <SlimeList />."
+        ],
+        starter:
+`// PHASE 3: Lists Remix (Starter compiles but fails: wrong names + missing key)
 
 function SlimeList(){
   const slimes = ['Sly', 'Gloop', 'Murk'];
@@ -696,8 +703,8 @@ function SlimeList(){
     <div>
       <h2>Slimes</h2>
       <ul>
-        {slimes.map((name, i) => (
-          <li key={i}>{name}</li>
+        {slimes.map((name) => (
+          <li>{name}</li>
         ))}
       </ul>
     </div>
@@ -707,104 +714,303 @@ function SlimeList(){
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<SlimeList />);
 `,
-      checks(code) {
-        if (/DevWins123/.test(code)) return [];
-        const errs = [];
+        checks(code) {
+          if (/DevWins123/.test(code)) return [];
+          const errs = [];
 
-        if (!/function\s+SlimeList\s*\(/.test(code)) errs.push("Define SlimeList() as a function.");
+          if (!/function\s+SlimeList\s*\(/.test(code)) errs.push("Define SlimeList() as a function.");
 
-        if (!/const\s+slimes\s*=\s*\[\s*['"]Sly['"]\s*,\s*['"]Gloop['"]\s*,\s*['"]Murk['"]\s*\]/.test(code)) {
-          errs.push("Create: const slimes = ['Sly','Gloop','Murk'] (exact 3).");
+          if (!/const\s+slimes\s*=\s*\[\s*['"]Byte['"]\s*,\s*['"]Hex['"]\s*,\s*['"]Null['"]\s*\]/.test(code)) {
+            errs.push("Create: const slimes = ['Byte','Hex','Null'] (exact 3).");
+          }
+
+          if (!/slimes\.map\s*\(/.test(code)) errs.push("Use slimes.map(...) to create list items.");
+          if (!/key\s*=/.test(code)) errs.push("Each <li> must include key={...}.");
+
+          if (!/<h2>\s*Summoned\s*<\/h2>/.test(code)) errs.push("Show <h2>Summoned</h2> above the list.");
+          if (!/<ul>[\s\S]*<\/ul>/.test(code)) errs.push("Wrap items in a <ul>...</ul>.");
+
+          const renderOk =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code));
+          if (!renderOk) errs.push("Render <SlimeList /> with createRoot(...).render(...).");
+
+          return errs;
         }
-
-        if (!/slimes\.map\s*\(/.test(code)) errs.push("Use slimes.map(...) to create list items.");
-        if (!/key\s*=/.test(code)) errs.push("Each <li> must include key={...}.");
-
-        if (!/<h2>\s*Slimes\s*<\/h2>/.test(code)) errs.push("Show <h2>Slimes</h2> above the list.");
-        if (!/<ul>[\s\S]*<\/ul>/.test(code)) errs.push("Wrap items in a <ul>...</ul>.");
-
-        const renderOk =
-          /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code) ||
-          (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<SlimeList\s*\/>\s*\)/s.test(code));
-        if (!renderOk) errs.push("Render <SlimeList /> with createRoot(...).render(...).");
-
-        return errs;
       }
-    }
-  ]
-},
+    ]
+  },
+
+  /* ============================ ZONE 2 (Props Boss) ============================ */
   zone2: {
     id: "boss2",
     name: "Mismatch Beast",
-    hp: 35,
     rewardXp: 60,
     intro: [
       "A beast stitched from wrong names and missing props.",
       "It roars: “UNDEFINED!”"
     ],
-    goals: [
-      "Create a Card({ title }) component.",
-      "Render <Card title=\"Victory\" />",
-      "Card returns <h2>Victory</h2>",
-      "Use createRoot(...).render(...) correctly."
-    ],
-    starter:
-`// Defeat the Mismatch Beast by passing the right prop.
 
-function Card({ title }){
-  // TODO: return <h2>{title}</h2>
+    stages: [
+      {
+        title: "Prop Lock (Title Crystal Remix)",
+        goals: [
+          "Create Card({ title }) component.",
+          "Return <h2>{title}</h2>.",
+          "Render <Card title=\"Champion\" /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// PHASE 1: Props Remix (Starter compiles but fails: wrong prop + hardcoded text)
+
+function Card(props){
+  return <h2>Victory</h2>;
 }
 
-// TODO: create root and render <Card title="Victory" />
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Card title="Victory" />);
 `,
-    checks(code){
-      if (/DevWins123/.test(code)) return [];
-      const e=[];
-      if(!/function\s+Card\s*\(\s*\{\s*title\s*\}\s*\)/.test(code)) e.push("Define Card({ title }).");
-      if(!/<h2>\s*\{title\}\s*<\/h2>/.test(code) && !/<h2>\s*Victory\s*<\/h2>/.test(code)) e.push("Return <h2>{title}</h2> (so it becomes Victory).");
-      if(!/<Card\s+title=\\"?['"]?Victory['"]?\\"?\s*\/>/.test(code)) e.push('Render <Card title="Victory" />.');
-      const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\([\s\S]*\)/s.test(code);
-      if(!ok) e.push("Use createRoot(...).render(...) to show it.");
-      return e;
-    }
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+Card\s*\(\s*\{\s*title\s*\}\s*\)/.test(code)) e.push("Define Card({ title }).");
+          if(!/<h2>\s*\{title\}\s*<\/h2>/.test(code)) e.push("Return <h2>{title}</h2> (not hardcoded).");
+          if(!/<Card\s+title=\\"?['"]?Champion['"]?\\"?\s*\/>/.test(code)) e.push('Render <Card title="Champion" />.');
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\([\s\S]*<Card[\s\S]*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\([\s\S]*<Card[\s\S]*\)/s.test(code));
+          if(!ok) e.push("Use createRoot(...).render(...) correctly.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Two Props, One Blueprint",
+        goals: [
+          "Create Greeting({ name }) component returning <h2>Hey, {name}</h2>.",
+          "Render TWO greetings: one for Neo and one for Trinity.",
+          "Use createRoot(...).render(...) correctly."
+        ],
+        starter:
+`// PHASE 2: Props Remix (Starter compiles but fails: wrong text + only one render)
+
+function Greeting({ name }){
+  return <h2>Hello, {name}</h2>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Greeting name="Neo" />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code)) e.push("Define Greeting({ name }).");
+          if(!/<h2>\s*Hey,\s*\{name\}\s*<\/h2>/.test(code)) e.push("Return <h2>Hey, {name}</h2> (exact).");
+          if(!/<Greeting\s+name=\\"?['"]?Neo['"]?\\"?\s*\/>/.test(code)) e.push('Render <Greeting name="Neo" />.');
+          if(!/<Greeting\s+name=\\"?['"]?Trinity['"]?\\"?\s*\/>/.test(code)) e.push('Render <Greeting name="Trinity" />.');
+
+          const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\(/s.test(code) && /<Greeting[\s\S]*<Greeting/s.test(code);
+          if(!ok) e.push("Render both Greeting components in the same render(...) call.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "children Payload (Panel Remix)",
+        goals: [
+          "Create Panel({ title, children }) component.",
+          "Panel shows <h3>{title}</h3> and {children}.",
+          "Render <Panel title=\"Report\"><p>Status</p><p>Green</p></Panel>.",
+          "Use createRoot(...).render(...) correctly."
+        ],
+        starter:
+`// PHASE 3: children Remix (Starter compiles but fails: missing children + wrong render)
+
+function Panel({ title }){
+  return (
+    <section>
+      <h3>{title}</h3>
+    </section>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Panel title="Report" />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+Panel\s*\(\s*\{\s*title\s*,\s*children\s*\}\s*\)/.test(code)) e.push("Define Panel({ title, children }).");
+          if(!/<h3>\s*\{title\}\s*<\/h3>/.test(code)) e.push("Panel must show <h3>{title}</h3>.");
+          if(!/\{\s*children\s*\}/.test(code)) e.push("Panel must include {children}.");
+
+          if(!/<Panel\s+title=\\"?['"]?Report['"]?\\"?\s*>\s*<p>\s*Status\s*<\/p>\s*<p>\s*Green\s*<\/p>\s*<\/Panel>/s.test(code)) {
+            e.push('Render <Panel title="Report"><p>Status</p><p>Green</p></Panel>.');
+          }
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Panel[\s\S]*<\/Panel>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Panel[\s\S]*<\/Panel>\s*\)/s.test(code));
+          if(!ok) e.push("Use createRoot(...).render(...) to show Panel.");
+
+          return e;
+        }
+      }
+    ]
   },
 
+  /* ============================ ZONE 3 (State Boss) ============================ */
   zone3: {
     id: "boss3",
     name: "Swamp Loop Hydra",
-    hp: 40,
     rewardXp: 70,
     intro: [
       "A multi-headed hydra that grows with every rerender…",
       "Only correct state control can bind it."
     ],
-    goals: [
-      "Create Toggle() component with React.useState(false).",
-      "Show text ON when true, OFF when false.",
-      "Button flips the value using setOn(!on).",
-      "Render <Toggle /> with createRoot."
-    ],
-    starter:
-`function Toggle(){
-  // TODO: const [on, setOn] = React.useState(false);
-  // TODO: show ON/OFF and a button that flips it
+
+    stages: [
+      {
+        title: "Toggle Bind (State Remix)",
+        goals: [
+          "Create Toggle() component using React.useState(false).",
+          "UI must show exactly: Mode: ON or Mode: OFF.",
+          "Button flips with setOn(!on).",
+          "Render <Toggle /> with createRoot."
+        ],
+        starter:
+`// PHASE 1: Toggle Remix (Starter compiles but fails: wrong text + wrong flip)
+
+function Toggle(){
+  const [on, setOn] = React.useState(false);
+
+  return (
+    <div>
+      <p>{on ? "ON" : "OFF"}</p>
+      <button onClick={() => setOn(on)}>Flip</button>
+    </div>
+  );
 }
 
-// TODO: render <Toggle />
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Toggle />);
 `,
-    checks(code){
-      if (/DevWins123/.test(code)) return [];
-      const e=[];
-      if(!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
-      if(!/\bON\b/.test(code) || !/\bOFF\b/.test(code)) e.push("Show ON and OFF in the UI (conditional).");
-      if(!/setOn\s*\(\s*!on\s*\)/.test(code)) e.push("Flip state with setOn(!on).");
-      const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code)
-              || (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code));
-      if(!ok) e.push("Render <Toggle /> with createRoot.");
-      return e;
-    }
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e=[];
+
+          if(!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
+          if(!/Mode:\s*\{on\s*\?\s*["']ON["']\s*:\s*["']OFF["']\s*\}/.test(code) &&
+             !/Mode:\s*(ON|OFF)/.test(code)) {
+            e.push('Show exactly "Mode: ON" or "Mode: OFF" (Mode: ...).');
+          }
+          if(!/setOn\s*\(\s*!on\s*\)/.test(code)) e.push("Flip state with setOn(!on).");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <Toggle /> with createRoot.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Counter Bind (+1 Remix)",
+        goals: [
+          "Create Counter() component using React.useState(5).",
+          "Show exactly: Value: {n}.",
+          "Button decreases by 1 using setN(n - 1).",
+          "Render <Counter /> with createRoot."
+        ],
+        starter:
+`// PHASE 2: Counter Remix (Starter compiles but fails: wrong start + wrong operation + label)
+
+function Counter(){
+  const [n, setN] = React.useState(0);
+
+  return (
+    <div>
+      <p>Count: {n}</p>
+      <button onClick={() => setN(n + 1)}>Change</button>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Counter />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e=[];
+
+          if(!/React\.useState\s*\(\s*5\s*\)/.test(code)) e.push("Start at React.useState(5).");
+          if(!/Value:\s*\{n\}/.test(code)) e.push('Show exactly: Value: {n}.');
+          if(!/setN\s*\(\s*n\s*-\s*1\s*\)/.test(code)) e.push("Button must call setN(n - 1).");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Counter\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Counter\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <Counter /> with createRoot.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Choice Bind (State + Conditional)",
+        goals: [
+          'Use React.useState("Left").',
+          "Show: Path: {pick}.",
+          'Two buttons setPick("Left") and setPick("Right").',
+          "Render <Chooser /> with createRoot."
+        ],
+        starter:
+`// PHASE 3: Choice Remix (Starter compiles but fails: wrong initial + wrong setter values)
+
+function Chooser(){
+  const [pick, setPick] = React.useState("A");
+
+  return (
+    <div>
+      <p>Choice: {pick}</p>
+      <button onClick={() => setPick("A")}>Choose Left</button>
+      <button onClick={() => setPick("B")}>Choose Right</button>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Chooser />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e=[];
+
+          if(!/React\.useState\s*\(\s*["']Left["']\s*\)/.test(code)) e.push('Use React.useState("Left").');
+          if(!/Path:\s*\{pick\}/.test(code)) e.push("Show: Path: {pick}.");
+          if(!/setPick\s*\(\s*["']Left["']\s*\)/.test(code)) e.push('One button must do setPick("Left").');
+          if(!/setPick\s*\(\s*["']Right["']\s*\)/.test(code)) e.push('One button must do setPick("Right").');
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Chooser\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Chooser\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <Chooser /> with createRoot.");
+
+          return e;
+        }
+      }
+    ]
   }
 };
+
+// expose
+window.bosses = bosses;
 
 // expose
 window.bosses = bosses;
