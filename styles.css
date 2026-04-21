@@ -10,19 +10,15 @@ body {
   padding: 12px; border-bottom: 1px solid #2e3440; background:#0a0f1a;
 }
 .brand { display:flex; gap:10px; align-items:center; }
-.logo { width:32px; height:32px; border-radius:8px; background:linear-gradient(135deg,#34d399,#60a5fa); }
+.logo { width:32px; height:32px; border-radius:8px; background: var(--accent);}
 .wrap { display:grid; gap:12px; padding:12px; grid-template-columns: 280px 1fr 320px; }
 .panel { border:1px solid #2e3440; border-radius:12px; background:#0c1526; }
 .panel > .head { padding:8px 12px; border-bottom:1px solid #2e3440; font-weight:700; }
 .panel > .body { padding: 10px; }
-.btn { padding:6px 10px; border-radius:8px; cursor:pointer; color:#e5e9f0; }
-.btn-primary { border:1px solid #10b981; background:#083028; }
-.btn-ghost { border:1px solid #2e3440; background:#0b1322; }
 .mapbtn {
   width:100%; text-align:left; padding:10px; margin-bottom:8px; border-radius:10px;
   border:1px solid #2e3440; background:#0b1322; color:#e5e9f0;
 }
-.mapbtn.active { border-color:#10b981; }
 .mapbtn.done { outline:2px solid #10b981; }
 .grid2 { display:grid; gap:8px; grid-template-columns: 1fr 1fr; }
 textarea {
@@ -41,16 +37,13 @@ textarea {
 }
 
 .btn.btn-primary{
-  border-color: var(--accent) !important;
+  border: 1px solid var(--accent);
+  background: linear-gradient(180deg, rgba(16,185,129,0.35), rgba(16,185,129,0.12));
   box-shadow: 0 0 0 2px rgba(255,255,255,0.02), 0 0 20px rgba(0,0,0,0.2);
 }
 
 .mapbtn.active{
   border-color: var(--accent) !important;
-}
-
-.logo{
-  background: var(--accent);
 }
 
 /* ================= Boss Layout (New) ================= */
@@ -60,7 +53,6 @@ textarea {
   align-items: start;
 }
 
-/* Center arena should feel like the main content */
 .boss-arena{
   min-height: calc(100vh - 84px); /* topbar approx */
 }
@@ -80,8 +72,7 @@ textarea {
   transition: width .4s ease;
 }
 
-
-/* Custom grid in boss arena (bigger editor than preview) */
+/* Custom grid in boss arena */
 .boss-grid{
   display: grid;
   gap: 12px;
@@ -136,12 +127,20 @@ textarea {
   flex-wrap: wrap;
   margin-top: 10px;
 }
-
-/* ===== Minecraft-style title extras ===== */
-.game-titleblock{
-  position: relative; /* needed for absolute children */
+.logo-img{
+  width: 40px;
+  height: 40px;
+  object-fit: contain;
+  border-radius: 8px;
+  display: block;
 }
-
+.launch-logo{
+  width: 96px;
+  height: 96px;
+  object-fit: contain;
+  display: block;
+  margin-bottom: 12px;
+}
 /* small version text under title */
 .game-version{
   margin-top: 6px;
@@ -150,7 +149,7 @@ textarea {
   letter-spacing: 0.6px;
 }
 
-/* yellow rotating splash like Minecraft */
+/* yellow rotating splash */
 .game-splash{
   position: absolute;
   top: 10px;
@@ -168,11 +167,6 @@ textarea {
 @keyframes splashWobble{
   0%,100%{ transform: rotate(-12deg) scale(1); }
   50%{ transform: rotate(-12deg) scale(1.06); }
-}
-
-/* ===== Map page layout ===== */
-.wrap.map-only{
-  grid-template-columns: 1fr 360px 320px;
 }
 
 /* ===== Game Menu Styling ===== */
@@ -243,32 +237,7 @@ textarea {
   height: 1px;
   background: #2e3440;
   opacity: 0.8;
-  margin: 4px 0;
-}
-
-.btn.big{
-  padding: 10px 12px;
-  font-size: 14px;
-  border-radius: 10px;
-}
-
-.profile-row{
-  display:flex;
-  justify-content: space-between;
-  align-items:center;
-  border: 1px solid #2e3440;
-  border-radius: 10px;
-  padding: 8px 10px;
-  background: rgba(12,21,38,0.6);
-}
-
-.profile-label{
-  color:#9aa4b2;
-  font-size: 12px;
-}
-
-.profile-value{
-  font-weight: 900;
+  margin: 6px 0;
 }
 
 .quest-tip{
@@ -280,7 +249,10 @@ textarea {
   font-size: 12px;
 }
 /* ===== Launch Screen Game Menu ===== */
+
 .launch.game-bg{
+  position: relative;
+  overflow: hidden;
   min-height: calc(100vh - 64px);
   display: grid;
   place-items: center;
@@ -299,10 +271,10 @@ textarea {
   gap: 14px;
   padding: 18px;
   border-radius: 18px;
-  border: 1px solid #2e3440;
-  background: rgba(8,14,26,0.75);
   box-shadow: 0 30px 80px rgba(0,0,0,.55);
   backdrop-filter: blur(6px);
+  border: 1px solid rgba(148,163,184,0.18);
+  background: rgba(8,14,26,0.68);
 }
 
 .game-titleblock{
@@ -310,6 +282,8 @@ textarea {
   border-radius: 14px;
   border: 1px solid #2e3440;
   background: rgba(11,18,32,0.7);
+  position: relative; /* needed for absolute children */
+
 }
 
 .game-title{
@@ -318,6 +292,7 @@ textarea {
   letter-spacing: 2px;
   text-transform: uppercase;
   line-height: 1.05;
+  text-shadow: 0 10px 28px rgba(0,0,0,0.45);
 }
 
 .game-subtitle{
@@ -336,9 +311,9 @@ textarea {
 .game-panel{
   padding: 0;
   border-radius: 14px;
-  border: 1px solid #2e3440;
   background: rgba(11,18,32,0.65);
   overflow: hidden;
+  border: 1px solid rgba(148,163,184,0.18);
 }
 
 .game-panel-head{
@@ -346,6 +321,10 @@ textarea {
   font-weight: 800;
   border-bottom: 1px solid #2e3440;
   background: rgba(12,21,38,0.85);
+  letter-spacing: .6px;
+  text-transform: uppercase;
+  font-size: 12px;
+  opacity: .95;
 }
 
 .game-panel-body{
@@ -358,12 +337,7 @@ textarea {
   padding: 12px 14px;
   font-size: 15px;
   font-weight: 800;
-}
-
-.menu-divider{
-  height: 1px;
-  background: #2e3440;
-  margin: 6px 0;
+  border-radius: 10px;
 }
 
 .profile-row{
@@ -377,6 +351,7 @@ textarea {
 }
 
 .profile-label{
+  color:#9aa4b2;
   opacity: .8;
   font-size: 12px;
   letter-spacing: .5px;
@@ -387,24 +362,15 @@ textarea {
   font-weight: 900;
 }
 
-.quest-tip{
-  padding: 10px;
-  border-radius: 12px;
-  border: 1px solid #2e3440;
-  background: rgba(96,165,250,0.07);
-}
-
 /* Mobile stack */
 @media (max-width: 900px){
   .game-frame{
     grid-template-columns: 1fr;
   }
 }
-/* ===== Animated scanlines + particles (CSS only) ===== */
-.launch.game-bg{
-  position: relative;
-  overflow: hidden;
-}
+
+/* ===== Animated scanlines and particles ===== */
+
 .launch.game-bg::before,
 .launch.game-bg::after{
   z-index: 0;
@@ -414,6 +380,7 @@ textarea {
   position: relative;
   z-index: 1;
 }
+
 /* scanlines */
 .launch.game-bg::before{
   content:"";
@@ -461,9 +428,13 @@ textarea {
   50%  { transform: translate(18px,-12px); opacity: 0.85; }
   100% { transform: translate(0,0); opacity: 0.65; }
 }
-/* ===== Chunky game button feel ===== */
+
+/* ===== Chunky game button ===== */
 .btn{
+  padding: 6px 10px;
   border-radius: 10px;
+  cursor: pointer;
+  color: #e5e9f0;
   border: 1px solid #2e3440;
   background: rgba(11,18,32,0.6);
   box-shadow:
@@ -488,40 +459,13 @@ textarea {
     0 -1px 0 rgba(255,255,255,0.05) inset;
 }
 
-/* Primary: more “Start Game” vibe */
-.btn-primary{
-  background: linear-gradient(180deg, rgba(16,185,129,0.35), rgba(16,185,129,0.12));
-  border-color: rgba(16,185,129,0.55);
-}
-
 /* Ghost: looks like menu buttons */
+
 .btn-ghost{
   background: linear-gradient(180deg, rgba(148,163,184,0.10), rgba(148,163,184,0.04));
+  border:1px solid #2e3440; 
 }
 
-/* Menu frame looks more “game UI” */
-.game-frame{
-  border: 1px solid rgba(148,163,184,0.18);
-  background: rgba(8,14,26,0.68);
-}
-
-.game-panel{
-  border: 1px solid rgba(148,163,184,0.18);
-}
-
-.game-panel-head{
-  letter-spacing: .6px;
-  text-transform: uppercase;
-  font-size: 12px;
-  opacity: .95;
-}
-
-/* give the title more punch */
-.game-title{
-  text-shadow: 0 10px 28px rgba(0,0,0,0.45);
-}
-
-/* ===== Minecraft-ish menu buttons ===== */
 .game-panel-body .btn{
   width: 100%;
   padding: 12px 14px;
@@ -534,7 +478,6 @@ textarea {
   font-size: 16px;
 }
 
-/* more “bevel” */
 .game-panel-body .btn{
   box-shadow:
     0 2px 0 rgba(255,255,255,0.08) inset,
@@ -549,11 +492,99 @@ textarea {
     0 -1px 0 rgba(255,255,255,0.06) inset;
 }
 
+.settings-page{
+  padding:12px;
+  display:grid;
+  place-items:start center;
+}
+
+.settings-main{
+  width:min(900px, 100%);
+}
+
+.settings-grid{
+  display:grid;
+  gap:16px;
+}
+
+.settings-card{
+  border:1px solid #2e3440;
+  border-radius:16px;
+  padding:16px;
+  background: rgba(11,18,32,0.65);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+}
+
+.settings-card-title{
+  font-size:18px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
+.settings-actions{
+  display:flex;
+  flex-wrap:wrap;
+  gap:10px;
+}
+
+.danger-card{
+  border-color: rgba(248,113,113,0.28);
+}
+
+.danger-btn{
+  border-color: rgba(248,113,113,0.35) !important;
+}
+
+.howto-page{
+  padding:12px;
+  display:grid;
+  place-items:start center;
+}
+
+.howto-main{
+  width:min(980px, 100%);
+}
+
+.howto-grid{
+  display:grid;
+  gap:16px;
+}
+
+.howto-hero{
+  border:1px solid #2e3440;
+  border-radius:18px;
+  padding:18px;
+  background:
+    radial-gradient(circle at top left, rgba(96,165,250,0.12), transparent 45%),
+    linear-gradient(180deg, rgba(11,18,32,0.85), rgba(11,18,32,0.65));
+}
+
+.howto-title{
+  font-size:28px;
+  font-weight:1000;
+  letter-spacing:.4px;
+  margin-bottom:8px;
+}
+
+.howto-card{
+  border:1px solid #2e3440;
+  border-radius:16px;
+  padding:16px;
+  background: rgba(11,18,32,0.6);
+}
+
+.howto-card-title{
+  font-size:17px;
+  font-weight:900;
+  margin-bottom:8px;
+}
+
 /* ===== World Map Canvas ===== */
+
 .worldmap{
   position: relative;
-  height: 560px;
-  border-radius: 14px;
+  height: 640px;
+  border-radius: 18px;
   border: 1px solid #2e3440;
   overflow: hidden;
   background:
@@ -561,9 +592,9 @@ textarea {
     radial-gradient(800px 600px at 80% 40%, rgba(16,185,129,0.08), transparent 60%),
     radial-gradient(900px 700px at 50% 90%, rgba(167,139,250,0.08), transparent 60%),
     linear-gradient(180deg, #060a14 0%, #070f22 60%, #060a14 100%);
+  box-shadow: inset 0 0 40px rgba(0,0,0,0.25);
 }
 
-/* subtle “paper/texture” */
 .worldmap::before{
   content:"";
   position:absolute; inset:0;
@@ -581,16 +612,104 @@ textarea {
   pointer-events:none;
 }
 
-/* ===== Zone regions (biomes) ===== */
+.zone-region.selected{
+  outline: 2px solid var(--accent);
+  box-shadow:
+    0 0 0 3px rgba(96,165,250,0.16),
+    0 18px 40px rgba(0,0,0,0.35);
+}
+
+.zone-region{
+  position: absolute;
+  transform: translate(0, 0);
+  text-align: left;
+}
+
+.mission-node{
+  z-index: 2;
+}
+
+.zone-region{
+  z-index: 1;
+}
+
+.boss-node{
+  z-index: 3;
+}
+
+.map-svg{
+  z-index: 0;
+}
+
+.map-path-svg{
+  fill: none;
+  stroke: rgba(148,163,184,0.28);
+  stroke-width: 0.9;
+  stroke-dasharray: 2.5 2.5;
+  stroke-linecap: round;
+}
+
+.map-page{
+  display:grid;
+  grid-template-columns: minmax(720px, 1fr) 340px;
+  gap:16px;
+  padding:12px;
+  align-items:start;
+}
+
+.map-main{
+  min-height: calc(100vh - 88px);
+}
+
+.map-side{
+  display:grid;
+  gap:12px;
+}
+
+.map-side-actions{
+  display:grid;
+  gap:10px;
+}
+
+.map-zone-info{
+  display:grid;
+  gap:6px;
+}
+
+.map-zone-name{
+  font-size:18px;
+  font-weight:900;
+  letter-spacing:.3px;
+}
+
+.quest-page{
+  display:grid;
+  grid-template-columns: 320px minmax(700px, 1fr) 300px;
+  gap:12px;
+  padding:12px;
+  align-items:start;
+}
+
+.quest-left,
+.quest-main,
+.quest-right{
+  display:grid;
+  gap:12px;
+}
+
+/* ===== Zone regions ===== */
+
 .zone-region{
   position:absolute;
-  border-radius: 16px;
-  border: 1px solid #2e3440;
-  padding: 10px 12px;
-  cursor: pointer;
-  box-shadow: 0 18px 40px rgba(0,0,0,0.35);
-  transition: transform .12s ease, filter .12s ease;
-  user-select: none;
+  border-radius:20px;
+  border:1px solid rgba(148,163,184,0.16);
+  padding:14px;
+  cursor:pointer;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.30);
+  transition: transform .12s ease, filter .12s ease, box-shadow .12s ease;
+  user-select:none;
+  text-align:left;
+  z-index:1;
 }
 
 .zone-region:hover{
@@ -599,27 +718,71 @@ textarea {
 }
 
 .zone-region.locked{
-  opacity: 0.45;
-  cursor: not-allowed;
-  filter: grayscale(0.4);
+  opacity:.45;
+  cursor:not-allowed;
+  filter: grayscale(.35);
 }
 
 .zone-title{
-  font-weight: 900;
-  letter-spacing: .3px;
+  font-size:14px;
+  font-weight:900;
+  line-height:1.15;
+  margin-bottom:4px;
+  text-shadow: 0 2px 8px rgba(0,0,0,0.35);
 }
+
 .zone-sub{
-  font-size: 12px;
-  opacity: 0.8;
+  font-size:12px;
+  opacity:.9;
+  line-height:1.2;
 }
+
 .zone-lock{
   position:absolute;
-  right: 10px;
-  top: 10px;
+  right:10px;
+  top:10px;
+  opacity:.9;
+}
+
+.zone-label{
+  position: absolute;
+  z-index: 4;
+  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(6, 10, 18, 0.82);
+  border: 1px solid rgba(148,163,184,0.18);
+  box-shadow: 0 10px 24px rgba(0,0,0,0.28);
+  max-width: 220px;
+}
+
+.zone-label.selected{
+  border-color: var(--accent);
+  box-shadow:
+    0 0 0 2px rgba(96,165,250,0.12),
+    0 10px 24px rgba(0,0,0,0.28);
+}
+
+.zone-label.locked{
+  opacity: 0.65;
+}
+
+.zone-label-title{
+  font-weight: 900;
+  font-size: 15px;
+  color: #f8fafc;
+  line-height: 1.1;
+}
+
+.zone-label-sub{
+  margin-top: 2px;
+  font-size: 12px;
+  color: #cbd5e1;
   opacity: 0.9;
 }
 
-/* Biome flavors */
+/* Biomes */
+
 .biome-canyon{
   background:
     radial-gradient(circle at 30% 30%, rgba(251,191,36,0.18), transparent 55%),
@@ -637,29 +800,31 @@ textarea {
 }
 
 /* ===== Mission nodes ===== */
+
 .mission-node{
   position:absolute;
   transform: translate(-50%, -50%);
-  width: 38px;
-  height: 38px;
+  width: 46px;
+  height: 46px;
   border-radius: 999px;
-  border: 1px solid rgba(148,163,184,0.25);
-  background: rgba(8,14,26,0.85);
-  color: #e5e9f0;
-  font-weight: 900;
-  cursor: pointer;
+  border: 2px solid rgba(148,163,184,0.22);
+  background: radial-gradient(circle at 30% 30%, rgba(96,165,250,0.16), rgba(8,14,26,0.94));
+  color:#fff;
+  font-size:16px;
+  font-weight:900;
   display:grid;
   place-items:center;
+  cursor:pointer;
+  z-index:2;
   box-shadow:
-    0 2px 0 rgba(255,255,255,0.06) inset,
-    0 -2px 0 rgba(0,0,0,0.45) inset,
-    0 16px 32px rgba(0,0,0,0.35);
-  transition: transform .08s ease, filter .12s ease, box-shadow .12s ease;
+    0 0 0 2px rgba(255,255,255,0.03) inset,
+    0 14px 28px rgba(0,0,0,0.35);
+  transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
 }
 
 .mission-node:hover{
-  filter: brightness(1.10);
-  transform: translate(-50%, -50%) scale(1.06);
+  transform: translate(-50%, -50%) scale(1.08);
+  filter: brightness(1.08);
 }
 
 .mission-node:active{
@@ -667,25 +832,28 @@ textarea {
 }
 
 .mission-node.locked{
-  opacity: 0.45;
-  cursor: not-allowed;
+  opacity:.45;
+  filter: grayscale(.35);
+  cursor:not-allowed;
 }
 
 .mission-node.done{
-  border-color: rgba(16,185,129,0.55);
+  border-color:#34d399;
+  background: radial-gradient(circle at 30% 30%, rgba(52,211,153,0.18), rgba(8,14,26,0.94));
   box-shadow:
-    0 0 0 2px rgba(16,185,129,0.18),
-    0 16px 32px rgba(0,0,0,0.35);
+    0 0 0 3px rgba(52,211,153,0.16),
+    0 14px 28px rgba(0,0,0,0.35);
 }
 
 .mission-node.active{
-  border-color: var(--accent);
+  border-color:#60a5fa;
   box-shadow:
-    0 0 0 3px rgba(96,165,250,0.22),
-    0 16px 32px rgba(0,0,0,0.35);
+    0 0 0 4px rgba(96,165,250,0.20),
+    0 16px 32px rgba(0,0,0,0.40);
 }
 
 /* SVG layer for nice curves */
+
 .map-svg{
   position:absolute;
   inset:0;
@@ -695,48 +863,44 @@ textarea {
   opacity: 0.8;
 }
 
-.map-path-svg{
-  fill: none;
-  stroke: rgba(148,163,184,0.22);
-  stroke-width: 0.7;
-  stroke-dasharray: 2.5 2.5;
-  filter: drop-shadow(0 10px 20px rgba(0,0,0,0.35));
-}
 
 /* Boss node styling */
+
 .boss-node{
   position:absolute;
   transform: translate(-50%, -50%);
-  width: 46px;
-  height: 46px;
+  width: 58px;
+  height: 58px;
   border-radius: 999px;
-  border: 1px solid rgba(148,163,184,0.30);
-  background: rgba(8,14,26,0.92);
-  font-size: 18px;
+  border: 2px solid rgba(251,191,36,0.30);
+  background: radial-gradient(circle at 30% 30%, rgba(251,191,36,0.18), rgba(8,14,26,0.96));
+  color:#fff;
+  font-size:22px;
+  font-weight:900;
   display:grid;
   place-items:center;
-  box-shadow:
-    0 2px 0 rgba(255,255,255,0.06) inset,
-    0 -2px 0 rgba(0,0,0,0.45) inset,
-    0 18px 38px rgba(0,0,0,0.35);
   cursor:pointer;
+  z-index:3;
+  box-shadow:
+    0 0 0 2px rgba(255,255,255,0.03) inset,
+    0 18px 38px rgba(0,0,0,0.40);
 }
 
 .boss-node.ready{
-  border-color: rgba(251,191,36,0.65);
+  border-color:#fbbf24;
   box-shadow:
-    0 0 0 3px rgba(251,191,36,0.18),
-    0 18px 38px rgba(0,0,0,0.35);
-  animation: bossPulse 1.6s ease-in-out infinite;
+    0 0 0 4px rgba(251,191,36,0.18),
+    0 18px 38px rgba(0,0,0,0.40);
+  animation: bossPulse 1.5s ease-in-out infinite;
 }
 
 .boss-node.done{
-  border-color: rgba(16,185,129,0.55);
-  opacity: 0.9;
+  border-color:#34d399;
+  background: radial-gradient(circle at 30% 30%, rgba(52,211,153,0.16), rgba(8,14,26,0.96));
 }
 
 .boss-node.locked{
-  opacity: 0.45;
+  opacity:.45;
   cursor:not-allowed;
 }
 
@@ -744,10 +908,3 @@ textarea {
   0%,100%{ transform: translate(-50%, -50%) scale(1); }
   50%{ transform: translate(-50%, -50%) scale(1.06); }
 }
-.wrap { grid-template-columns: 360px 1fr 320px; }
-
-/* Boss Always on top*/
-.mission-node { z-index: 2; }
-.boss-node { z-index: 3; }
-.map-svg { z-index: 1; }
-

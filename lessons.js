@@ -32,12 +32,12 @@ const lessons = [
     title: "Your First Component",
     story: [
       "You arrive at Component Canyon. Slimes drip from malformed tags.",
-      "The Mentor whispers: “Forge your first blade—a simple component.”"
+      "The Mentor whispers: “Forge your first blade-a simple component.”"
     ],
     learn: [
       learn(
         "What’s a Component?",
-        "A component is your **sword blueprint**—a tiny function that returns UI. Call it to forge a new sword.",
+        "A component is your **sword blueprint**-a tiny function that returns UI. Call it to forge a new sword.",
         [
           "It’s a **function** with a NameThatStartsWithCapital.",
           "It returns **JSX** (HTML-like code) such as `<h1>...</h1>`.",
@@ -52,7 +52,7 @@ const lessons = [
     // NOTE: Learn example intentionally differs from the Quest goal text.
     steps: [
       {
-        title: "Step 1 — Create the blueprint",
+        title: "Step 1 - Create the blueprint",
         explain: "Make a function component named Hello. This is your sword plan.",
         snippet:
 `function Hello(){
@@ -60,13 +60,13 @@ const lessons = [
 }`
       },
       {
-        title: "Step 2 — Mount the forge",
+        title: "Step 2 - Mount the forge",
         explain: "Tell React where to put your UI (the anvil).",
         snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));`
       },
       {
-        title: "Step 3 — Forge your first blade",
+        title: "Step 3 - Forge your first blade",
         explain: "Render (build) one sword by calling your blueprint.",
         snippet:
 `root.render(<Hello />);`
@@ -106,7 +106,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Hello />);`,
     learn: [
       learn(
         "Why split?",
-        "Like **sword, shield, and potion**—smaller parts are easier to upgrade and reuse.",
+        "Like **sword, shield, and potion**-smaller parts are easier to upgrade and reuse.",
         [
           "Make `Header`, `Main`, and `Footer` as separate components.",
           "Make an `App()` that returns all three.",
@@ -119,19 +119,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Hello />);`,
       "Victory tip: Keep each piece small and clear."
     ],
     steps: [
-      { title: "Step 1 — Header", explain: "Your signpost.", snippet:
+      { title: "Step 1 - Header", explain: "Your signpost.", snippet:
 `function Header(){
   return <h1>Welcome to Camp</h1>;
 }`},
-      { title: "Step 2 — Main", explain: "Your campfire message.", snippet:
+      { title: "Step 2 - Main", explain: "Your campfire message.", snippet:
 `function Main(){
   return <p>Sharpen your JSX.</p>;
 }`},
-      { title: "Step 3 — Footer", explain: "A small tag.", snippet:
+      { title: "Step 3 - Footer", explain: "A small tag.", snippet:
 `function Footer(){
   return <small>© Camp</small>;
 }`},
-      { title: "Step 4 — App packs them", explain: "Put all gear into your backpack.", snippet:
+      { title: "Step 4 - App packs them", explain: "Put all gear into your backpack.", snippet:
 `function App(){
   return (
     <div>
@@ -141,7 +141,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Hello />);`,
     </div>
   );
 }`},
-      { title: "Step 5 — Render App", explain: "Show the camp on the page.", snippet:
+      { title: "Step 5 - Render App", explain: "Show the camp on the page.", snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<App />);`}
     ],
@@ -188,7 +188,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);`,
   learn: [
     learn(
       "Why one parent?",
-      "JSX is like a **crate shipment**—you can’t deliver two separate crates without packing them together.",
+      "JSX is like a **crate shipment**-you can’t deliver two separate crates without packing them together.",
       [
         "A component must return **one** parent element.",
         "Use a `<div>` or use a Fragment: `<> ... </>`.",
@@ -201,7 +201,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);`,
     "Victory tip: Use exactly the two required tags."
   ],
   steps: [
-    { title: "Step 1 — Make Duo", explain: "Return two elements wrapped.", snippet:
+    { title: "Step 1 - Make Duo", explain: "Return two elements wrapped.", snippet:
 `function Duo(){
   return (
     <>
@@ -210,7 +210,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<App/>);`,
     </>
   );
 }`},
-    { title: "Step 2 — Render it", explain: "Mount it to the page.", snippet:
+    { title: "Step 2 - Render it", explain: "Mount it to the page.", snippet:
 `ReactDOM.createRoot(document.getElementById('root')).render(<Duo />);`}
   ],
   demo:
@@ -247,12 +247,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Duo/>);`,
   title: "Lists: Summon Slimes with map()",
   story: [
     "Slimes multiply. One by one is too slow.",
-    "The Archivist says: “Use a loop spell — map() — and give each slime a key.”"
+    "The Archivist says: “Use a loop spell - map() - and give each slime a key.”"
   ],
   learn: [
     learn(
       "Rendering lists",
-      "A list is a **summoning circle**—an array becomes multiple UI elements.",
+      "A list is a **summoning circle**-an array becomes multiple UI elements.",
       [
         "Use `items.map(item => <li key={...}>{item}</li>)`",
         "Keys help React track which item is which.",
@@ -265,7 +265,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Duo/>);`,
     "Victory tip: keys can be the string itself for this quest."
   ],
   steps: [
-    { title: "Step 1 — Array + map", explain: "Turn an array into <li> elements.", snippet:
+    { title: "Step 1 - Array + map", explain: "Turn an array into <li> elements.", snippet:
 `function SlimeList(){
   const slimes = ["Gloop", "Splurt", "Drip"];
   return (
@@ -274,7 +274,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Duo/>);`,
     </ul>
   );
 }`},
-    { title: "Step 2 — Render it", explain: "Show the slime army.", snippet:
+    { title: "Step 2 - Render it", explain: "Show the slime army.", snippet:
 `ReactDOM.createRoot(document.getElementById('root')).render(<SlimeList />);`}
   ],
   demo:
@@ -319,7 +319,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<SlimeList/>);`,
   learn: [
     learn(
       "Conditional UI",
-      "Like a **guard**: if you have the pass, you enter — otherwise you wait.",
+      "Like a **guard**: if you have the pass, you enter - otherwise you wait.",
       [
         "Use a boolean: `const ok = true;`",
         "Ternary: `{ok ? <A/> : <B/>}`",
@@ -332,12 +332,12 @@ ReactDOM.createRoot(document.getElementById('root')).render(<SlimeList/>);`,
     "Victory tip: Use a ternary operator for this quest."
   ],
   steps: [
-    { title: "Step 1 — Gate logic", explain: "Decide which message appears.", snippet:
+    { title: "Step 1 - Gate logic", explain: "Decide which message appears.", snippet:
 `function Gate(){
   const ok = true;
   return <h2>{ok ? "ACCESS GRANTED" : "ACCESS DENIED"}</h2>;
 }`},
-    { title: "Step 2 — Render it", explain: "Show the gate result.", snippet:
+    { title: "Step 2 - Render it", explain: "Show the gate result.", snippet:
 `ReactDOM.createRoot(document.getElementById('root')).render(<Gate />);`}
   ],
   demo:
@@ -379,7 +379,7 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Gate/>);`,
     learn: [
       learn(
         "What are props?",
-        "Props are **upgrade gems**—data you pass into a component.",
+        "Props are **upgrade gems**-data you pass into a component.",
         [
           "Receive with a parameter: `function Greeting({ name })`.",
           "Render with `{name}` in JSX.",
@@ -393,11 +393,11 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Gate/>);`,
     ],
     // Learn shows Nima; Quest requires Mack.
     steps: [
-      { title: "Step 1 — Make Greeting", explain: "Receive the name gem.", snippet:
+      { title: "Step 1 - Make Greeting", explain: "Receive the name gem.", snippet:
 `function Greeting({ name }){
   return <h2>Hello, {name}</h2>;
 }`},
-      { title: "Step 2 — Render it", explain: "Socket the gem into the blade.", snippet:
+      { title: "Step 2 - Render it", explain: "Socket the gem into the blade.", snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Greeting name="Nima" />);`}
     ],
@@ -434,7 +434,7 @@ ReactDOM.createRoot(document.getElementById('root'))
     learn: [
       learn(
         "children prop",
-        "Think of a chest with slots—the contents you place inside are the `children`.",
+        "Think of a chest with slots-the contents you place inside are the `children`.",
         [
           "Define `function Panel({ title, children })`.",
           "Show `<h3>{title}</h3>` and `{children}` inside.",
@@ -447,7 +447,7 @@ ReactDOM.createRoot(document.getElementById('root'))
     ],
     // Learn shows title Notes; Quest needs Log + Entry
     steps: [
-      { title: "Step 1 — Panel", explain: "Title plus any inside content.", snippet:
+      { title: "Step 1 - Panel", explain: "Title plus any inside content.", snippet:
 `function Panel({ title, children }){
   return (
     <section>
@@ -456,7 +456,7 @@ ReactDOM.createRoot(document.getElementById('root'))
     </section>
   );
 }`},
-      { title: "Step 2 — Render it", explain: "Place content between tags.", snippet:
+      { title: "Step 2 - Render it", explain: "Place content between tags.", snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Panel title="Notes"><p>Sample</p></Panel>);`}
     ],
@@ -485,6 +485,356 @@ ReactDOM.createRoot(document.getElementById('root'))
     xp: 30,
   },
 
+  {
+  id: "r09",
+  zone: "zone2",
+  title: "Events: Click the Signal",
+  story: [
+    "A signal beacon in Prop Plains refuses to fire.",
+    "The Tinker says: “Buttons respond only when properly wired.”"
+  ],
+  learn: [
+    learn(
+      "React click events",
+      "An event handler is like a **trigger rune**-the action only happens when the button is pressed.",
+      [
+        "React uses `onClick`, not `onclick`.",
+        "Pass the function itself: `onClick={handleClick}`.",
+        "Do not call the function immediately in JSX unless using an arrow function on purpose."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `Beacon` with a working click button.",
+    "Victory tip: define the handler, then connect it with `onClick`."
+  ],
+  steps: [
+    { title: "Step 1 - Make the handler", explain: "Create the function that will run when clicked.", snippet:
+`function Beacon(){
+  function handleClick(){
+    console.log("Signal sent!");
+  }
+
+  return <button onClick={handleClick}>Send Signal</button>;
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the beacon.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<Beacon />);`}
+  ],
+  demo:
+`function Beacon(){
+  function handleClick(){ console.log("Signal sent!"); }
+  return <button onClick={handleClick}>Send Signal</button>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Beacon />);`,
+  goals: [
+    "Create Beacon()",
+    "Define function handleClick()",
+    "Button uses onClick={handleClick}",
+    "Render <Beacon />"
+  ],
+  starter: `// Make a button that calls handleClick when clicked.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/function\s+Beacon\s*\(/.test(code)) e.push("Define Beacon().");
+    if (!/function\s+handleClick\s*\(/.test(code)) e.push("Define handleClick().");
+    if (!/onClick=\{\s*handleClick\s*\}/.test(code)) e.push("Use onClick={handleClick} on the button.");
+    if (!/<button/.test(code)) e.push("Include a button.");
+    const okRender =
+      /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Beacon\s*\/>\s*\)/s.test(code) ||
+      (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Beacon\s*\/>\s*\)/s.test(code));
+    if (!okRender) e.push("Render <Beacon />.");
+    return e;
+  },
+  xp: 25,
+},
+
+{
+  id: "r10",
+  zone: "zone2",
+  title: "Events: Pass an Argument",
+  story: [
+    "A message crystal needs a specific command phrase.",
+    "The Archivist says: “Sometimes the trigger must carry a payload.”"
+  ],
+  learn: [
+    learn(
+      "Passing arguments in events",
+      "Using an arrow function is like **packing a message into a spell scroll** before casting it.",
+      [
+        "Use `onClick={() => handleClick('Boost!')}` to pass data.",
+        "If you write `onClick={handleClick('Boost!')}`, it runs too early.",
+        "Arrow functions are useful when the handler needs custom input."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `ShoutButton` that sends the text Boost! to a handler.",
+    "Victory tip: use an arrow function in onClick."
+  ],
+  steps: [
+    { title: "Step 1 - Handler with input", explain: "Let the function accept a message.", snippet:
+`function ShoutButton(){
+  function shout(msg){
+    console.log(msg);
+  }
+
+  return <button onClick={() => shout("Boost!")}>Boost</button>;
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the button.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<ShoutButton />);`}
+  ],
+  demo:
+`function ShoutButton(){
+  function shout(msg){ console.log(msg); }
+  return <button onClick={() => shout("Boost!")}>Boost</button>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<ShoutButton />);`,
+  goals: [
+    "Create ShoutButton()",
+    "Define shout(msg)",
+    "Use onClick={() => shout(\"Boost!\")}",
+    "Render <ShoutButton />"
+  ],
+  starter: `// Pass "Boost!" into a click handler using an arrow function.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/function\s+ShoutButton\s*\(/.test(code)) e.push("Define ShoutButton().");
+    if (!/function\s+shout\s*\(\s*msg\s*\)/.test(code)) e.push("Define shout(msg).");
+    if (!/onClick=\{\s*\(\)\s*=>\s*shout\(\s*["']Boost!["']\s*\)\s*\}/.test(code)) e.push('Use onClick={() => shout("Boost!")}.');
+    const okRender =
+      /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<ShoutButton\s*\/>\s*\)/s.test(code) ||
+      (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<ShoutButton\s*\/>\s*\)/s.test(code));
+    if (!okRender) e.push("Render <ShoutButton />.");
+    return e;
+  },
+  xp: 30,
+},
+
+{
+  id: "r11",
+  zone: "zone2",
+  title: "Controlled Textarea",
+  story: [
+    "A feedback scroll glows with unstable text.",
+    "The Mentor says: “Bind what the player types, or the scroll drifts out of sync.”"
+  ],
+  learn: [
+    learn(
+      "Controlled inputs",
+      "A controlled input is like a **tethered familiar**-the UI and state stay connected.",
+      [
+        "Use `const [comment, setComment] = React.useState(\"\")`.",
+        "Bind with `value={comment}`.",
+        "Update with `onChange={(e) => setComment(e.target.value)}`."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `CommentBox` with a textarea tied to state.",
+    "Victory tip: value and onChange must both be present."
+  ],
+  steps: [
+    { title: "Step 1 - State", explain: "Track comment text in state.", snippet:
+`function CommentBox(){
+  const [comment, setComment] = React.useState("");
+
+  return (
+    <div>
+      <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
+      <p>Your Comment: {comment}</p>
+    </div>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Show the box on the page.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<CommentBox />);`}
+  ],
+  demo:
+`function CommentBox(){
+  const [comment, setComment] = React.useState("");
+  return (
+    <div>
+      <textarea value={comment} onChange={(e) => setComment(e.target.value)} />
+      <p>Your Comment: {comment}</p>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<CommentBox />);`,
+  goals: [
+    "Use React.useState(\"\") for comment",
+    "Textarea uses value={comment}",
+    "Textarea updates with e.target.value",
+    "Show {comment} in a <p>"
+  ],
+  starter: `// Make a controlled textarea using comment state.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useState\s*\(\s*["']["']\s*\)/.test(code)) e.push("Use React.useState(\"\") for comment.");
+    if (!/value=\{\s*comment\s*\}/.test(code)) e.push("Bind textarea with value={comment}.");
+    if (!/onChange=\{\s*\(e\)\s*=>\s*setComment\(e\.target\.value\)\s*\}/.test(code)) e.push("Use onChange={(e) => setComment(e.target.value)}.");
+    if (!/Your Comment:\s*\{comment\}/.test(code)) e.push("Show the current comment in the paragraph.");
+    return e;
+  },
+  xp: 30,
+},
+
+{
+  id: "r12",
+  zone: "zone2",
+  title: "Controlled Select",
+  story: [
+    "The plains forge offers three mounts, but the selector rune is broken.",
+    "The Tinker says: “A dropdown is just another tethered input.”"
+  ],
+  learn: [
+    learn(
+      "Controlled select",
+      "A select box is like choosing a **mount at a stable**-state remembers which one you picked.",
+      [
+        "Use `const [car, setCar] = React.useState(\"Fiat\")`.",
+        "Bind with `value={car}` on `<select>`.",
+        "Update with `onChange={(e) => setCar(e.target.value)}`."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `CarSelector` with a controlled dropdown.",
+    "Victory tip: state should match the selected option."
+  ],
+  steps: [
+    { title: "Step 1 - State + select", explain: "Control the selected value.", snippet:
+`function CarSelector(){
+  const [car, setCar] = React.useState("Fiat");
+
+  return (
+    <form>
+      <select value={car} onChange={(e) => setCar(e.target.value)}>
+        <option value="Ford">Ford</option>
+        <option value="Volvo">Volvo</option>
+        <option value="Fiat">Fiat</option>
+      </select>
+      <p>Selected car: {car}</p>
+    </form>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the selector.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<CarSelector />);`}
+  ],
+  demo:
+`function CarSelector(){
+  const [car, setCar] = React.useState("Fiat");
+  return (
+    <form>
+      <select value={car} onChange={(e) => setCar(e.target.value)}>
+        <option value="Ford">Ford</option>
+        <option value="Volvo">Volvo</option>
+        <option value="Fiat">Fiat</option>
+      </select>
+      <p>Selected car: {car}</p>
+    </form>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<CarSelector />);`,
+  goals: [
+    "Use React.useState(\"Fiat\")",
+    "Bind select with value={car}",
+    "Update car with e.target.value",
+    "Show Selected car: {car}"
+  ],
+  starter: `// Make a controlled select dropdown using car state.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useState\s*\(\s*["']Fiat["']\s*\)/.test(code)) e.push('Use React.useState("Fiat").');
+    if (!/<select[^>]*value=\{\s*car\s*\}/.test(code)) e.push("Bind the select with value={car}.");
+    if (!/onChange=\{\s*\(e\)\s*=>\s*setCar\(e\.target\.value\)\s*\}/.test(code)) e.push("Update car with e.target.value.");
+    if (!/Selected car:\s*\{car\}/.test(code)) e.push("Show Selected car: {car}.");
+    return e;
+  },
+  xp: 30,
+},
+
+{
+  id: "r13",
+  zone: "zone2",
+  title: "Checkbox of Consent",
+  story: [
+    "A contract gate in the plains demands agreement before passage.",
+    "The Archivist says: “Checkboxes obey checked, not plain value.”"
+  ],
+  learn: [
+    learn(
+      "Controlled checkbox",
+      "A checkbox is like a **seal on a contract**-either marked or unmarked.",
+      [
+        "Use `const [acceptTerms, setAcceptTerms] = React.useState(false)`.",
+        "Bind checkboxes with `checked={acceptTerms}`.",
+        "Update from `e.target.checked`."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `TermsForm` with a controlled checkbox.",
+    "Victory tip: checkboxes use checked, not value."
+  ],
+  steps: [
+    { title: "Step 1 - State + checkbox", explain: "Track whether the box is checked.", snippet:
+`function TermsForm(){
+  const [acceptTerms, setAcceptTerms] = React.useState(false);
+
+  return (
+    <form>
+      <label>
+        <input
+          type="checkbox"
+          checked={acceptTerms}
+          onChange={(e) => setAcceptTerms(e.target.checked)}
+        />
+        I accept the terms
+      </label>
+    </form>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the form.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<TermsForm />);`}
+  ],
+  demo:
+`function TermsForm(){
+  const [acceptTerms, setAcceptTerms] = React.useState(false);
+  return (
+    <form>
+      <label>
+        <input type="checkbox" checked={acceptTerms} onChange={(e) => setAcceptTerms(e.target.checked)} />
+        I accept the terms
+      </label>
+    </form>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<TermsForm />);`,
+  goals: [
+    "Use React.useState(false)",
+    "Checkbox uses checked={acceptTerms}",
+    "Update from e.target.checked"
+  ],
+  starter: `// Build a controlled checkbox using acceptTerms state.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
+    if (!/checked=\{\s*acceptTerms\s*\}/.test(code)) e.push("Bind the checkbox with checked={acceptTerms}.");
+    if (!/setAcceptTerms\(e\.target\.checked\)/.test(code)) e.push("Update state with e.target.checked.");
+    return e;
+  },
+  xp: 30,
+},
+
   /* ---------------- ZONE 3: State ---------------- */
   {
     id: "r03",
@@ -492,12 +842,12 @@ ReactDOM.createRoot(document.getElementById('root'))
     title: "useState: Counter",
     story: [
       "The swamp bubbles. Toads croak with every change.",
-      "Track a number—like your **XP bar**—and change it on click."
+      "Track a number-like your **XP bar**-and change it on click."
     ],
     learn: [
       learn(
         "State is memory",
-        "State is your **health/XP bar**—it changes as you play.",
+        "State is your **health/XP bar**-it changes as you play.",
         [
           "Make state: `const [n, setN] = React.useState(0)`.",
           "Show it with `{n}`.",
@@ -510,7 +860,7 @@ ReactDOM.createRoot(document.getElementById('root'))
       "Victory tip: Learn labels differ; Quest expects exact text Count: {n}."
     ],
     steps: [
-      { title: "Step 1 — Make Counter", explain: "Create the component.", snippet:
+      { title: "Step 1 - Make Counter", explain: "Create the component.", snippet:
 `function Counter(){
   const [n, setN] = React.useState(0);
   return (
@@ -520,7 +870,7 @@ ReactDOM.createRoot(document.getElementById('root'))
     </div>
   );
 }`},
-      { title: "Step 2 — Render it", explain: "Mount your counter.", snippet:
+      { title: "Step 2 - Render it", explain: "Mount your counter.", snippet:
 `const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Counter />);`}
     ],
@@ -546,6 +896,611 @@ ReactDOM.createRoot(document.getElementById('root')).render(<Counter/>);`,
     },
     xp: 30,
   },
+
+{
+  id: "r14",
+  zone: "zone3",
+  title: "useState: Theme Switch",
+  story: [
+    "The swamp glows in two moods: light and dark.",
+    "The Mentor says: “State can hold words, not just numbers.”"
+  ],
+  learn: [
+    learn(
+      "String state",
+      "State can remember a **mode crystal** just as easily as a score.",
+      [
+        "Use `const [theme, setTheme] = React.useState(\"light\")`.",
+        "Render `{theme}` in JSX.",
+        "Update it with the setter function."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `ThemePanel` that changes from light to dark.",
+    "Victory tip: use setTheme(\"dark\") on click."
+  ],
+  steps: [
+    { title: "Step 1 - String state", explain: "Track the current theme.", snippet:
+`function ThemePanel(){
+  const [theme, setTheme] = React.useState("light");
+
+  return (
+    <div>
+      <h1>The theme is: {theme}</h1>
+      <button onClick={() => setTheme("dark")}>Change to Dark</button>
+    </div>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the theme panel.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<ThemePanel />);`}
+  ],
+  demo:
+`function ThemePanel(){
+  const [theme, setTheme] = React.useState("light");
+  return (
+    <div>
+      <h1>The theme is: {theme}</h1>
+      <button onClick={() => setTheme("dark")}>Change to Dark</button>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<ThemePanel />);`,
+  goals: [
+    "Use React.useState(\"light\")",
+    "Show The theme is: {theme}",
+    "Button sets theme to dark"
+  ],
+  starter: `// Make a theme panel with string state.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useState\s*\(\s*["']light["']\s*\)/.test(code)) e.push('Use React.useState("light").');
+    if (!/The theme is:\s*\{theme\}/.test(code)) e.push("Show The theme is: {theme}.");
+    if (!/setTheme\s*\(\s*["']dark["']\s*\)/.test(code)) e.push('Use setTheme("dark") on button click.');
+    return e;
+  },
+  xp: 30,
+},
+
+  {
+  id: "r15",
+  zone: "zone3",
+  title: "Multiple State Crystals",
+  story: [
+    "Two crystals pulse in the swamp: identity and score.",
+    "The Tinker grins: “One component can track more than one thing.”"
+  ],
+  learn: [
+    learn(
+      "Multiple state hooks",
+      "Think of separate state hooks as **different inventory slots**-each stores its own item.",
+      [
+        "You can call `React.useState(...)` more than once.",
+        "Keep related values readable by naming them clearly.",
+        "Render both values anywhere inside the component."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `PlayerInfo` with username and score state.",
+    "Victory tip: use two separate state hooks."
+  ],
+  steps: [
+    { title: "Step 1 - Two state hooks", explain: "Track username and score separately.", snippet:
+`function PlayerInfo(){
+  const [username, setUsername] = React.useState("Guest");
+  const [score, setScore] = React.useState(0);
+
+  return (
+    <div>
+      <h1>Player: {username}</h1>
+      <p>Score: {score}</p>
+    </div>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the panel.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<PlayerInfo />);`}
+  ],
+  demo:
+`function PlayerInfo(){
+  const [username, setUsername] = React.useState("Guest");
+  const [score, setScore] = React.useState(0);
+  return (
+    <div>
+      <h1>Player: {username}</h1>
+      <p>Score: {score}</p>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<PlayerInfo />);`,
+  goals: [
+    "Use one state hook for username",
+    "Use one state hook for score",
+    "Show Player: {username}",
+    "Show Score: {score}"
+  ],
+  starter: `// Track both username and score in one component.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    const stateCalls = (code.match(/React\.useState\s*\(/g) || []).length;
+    if (stateCalls < 2) e.push("Use two React.useState(...) calls.");
+    if (!/Player:\s*\{username\}/.test(code)) e.push("Show Player: {username}.");
+    if (!/Score:\s*\{score\}/.test(code)) e.push("Show Score: {score}.");
+    return e;
+  },
+  xp: 30,
+},
+
+{
+  id: "r16",
+  zone: "zone3",
+  title: "Object State Update",
+  story: [
+    "A swamp relic stores many values in one shell.",
+    "The Archivist warns: “Replace one field carefully, or you shatter the whole record.”"
+  ],
+  learn: [
+    learn(
+      "Updating object state",
+      "An object in state is like a **character sheet**-change one stat without erasing the rest.",
+      [
+        "Object state is replaced, not merged automatically.",
+        "Use the spread operator: `{ ...old, score: 100 }`.",
+        "Updater functions are safe for deriving the next state."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `Player` that updates only score to 100.",
+    "Victory tip: keep username by spreading previousState."
+  ],
+  steps: [
+    { title: "Step 1 - Object state", explain: "Store several values together.", snippet:
+`function Player(){
+  const [playerData, setPlayerData] = React.useState({
+    username: "Alex",
+    score: 50,
+    level: 2
+  });
+
+  function updateScore(){
+    setPlayerData(previousState => {
+      return { ...previousState, score: 100 };
+    });
+  }
+
+  return (
+    <div>
+      <p>User: {playerData.username}</p>
+      <p>Score: {playerData.score}</p>
+      <button onClick={updateScore}>Max Score</button>
+    </div>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the player card.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<Player />);`}
+  ],
+  demo:
+`function Player(){
+  const [playerData, setPlayerData] = React.useState({ username: "Alex", score: 50, level: 2 });
+  function updateScore(){
+    setPlayerData(previousState => ({ ...previousState, score: 100 }));
+  }
+  return (
+    <div>
+      <p>User: {playerData.username}</p>
+      <p>Score: {playerData.score}</p>
+      <button onClick={updateScore}>Max Score</button>
+    </div>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Player />);`,
+  goals: [
+    "Use object state with username, score, level",
+    "Use previousState => ({ ...previousState, score: 100 })",
+    "Keep username visible",
+    "Button calls updateScore"
+  ],
+  starter: `// Update only the score field without removing username or level.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/playerData/.test(code)) e.push("Use playerData object state.");
+    if (!/previousState/.test(code)) e.push("Use previousState in the updater.");
+    if (!/\.\.\.\s*previousState/.test(code)) e.push("Spread previousState to keep old fields.");
+    if (!/score\s*:\s*100/.test(code)) e.push("Update score to 100.");
+    return e;
+  },
+  xp: 35,
+},
+
+{
+  id: "r17",
+  zone: "zone3",
+  title: "useEffect: First Echo",
+  story: [
+    "A timer vine ticks once in the swamp mist.",
+    "The Mentor says: “Some code should run after rendering, but only once.”"
+  ],
+  learn: [
+    learn(
+      "useEffect with empty dependency array",
+      "An effect is like a **post-battle ritual**-it runs after the render is done.",
+      [
+        "Use `React.useEffect(() => { ... }, [])` to run once.",
+        "The empty array means: only on the first render.",
+        "Effects are useful for timers, setup, and outside work."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `Timer` that increments count after the first render.",
+    "Victory tip: use [] so it does not rerun forever."
+  ],
+  steps: [
+    { title: "Step 1 - State + effect", explain: "Run one timeout after mount.", snippet:
+`function Timer(){
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the timer.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<Timer />);`}
+  ],
+  demo:
+`function Timer(){
+  const [count, setCount] = React.useState(0);
+  React.useEffect(() => {
+    setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+  }, []);
+  return <h1>I've rendered {count} times!</h1>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<Timer />);`,
+  goals: [
+    "Use React.useEffect(..., [])",
+    "Use setTimeout inside the effect",
+    "Update count with setCount((count) => count + 1)"
+  ],
+  starter: `// Use React.useEffect with [] so the timer setup runs once.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+    if (!/\[\s*\]/.test(code)) e.push("Include an empty dependency array [].");
+    if (!/setTimeout\s*\(/.test(code)) e.push("Use setTimeout inside the effect.");
+    if (!/setCount\s*\(\s*\(count\)\s*=>\s*count\s*\+\s*1\s*\)/.test(code)) e.push("Increment with setCount((count) => count + 1).");
+    return e;
+  },
+  xp: 35,
+},
+
+{
+  id: "r18",
+  zone: "zone3",
+  title: "useEffect: Count Dependency",
+  story: [
+    "A swamp orb recalculates whenever the count changes.",
+    "The Tinker says: “List your dependencies, or the magic goes stale.”"
+  ],
+  learn: [
+    learn(
+      "Dependency arrays",
+      "Dependencies are like **watchstones**-the effect reruns whenever one of them changes.",
+      [
+        "Use `React.useEffect(() => { ... }, [count])`.",
+        "Put every outside value the effect uses into the array.",
+        "This keeps derived values in sync."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `CounterCalc` that recalculates from count.",
+    "Victory tip: count belongs in the dependency array."
+  ],
+  steps: [
+    { title: "Step 1 - Derived calculation", explain: "Recompute when count changes.", snippet:
+`function CounterCalc(){
+  const [count, setCount] = React.useState(0);
+  const [calculation, setCalculation] = React.useState(0);
+
+  React.useEffect(() => {
+    setCalculation(() => count * 2);
+  }, [count]);
+
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calculation: {calculation}</p>
+    </>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the component.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<CounterCalc />);`}
+  ],
+  demo:
+`function CounterCalc(){
+  const [count, setCount] = React.useState(0);
+  const [calculation, setCalculation] = React.useState(0);
+  React.useEffect(() => {
+    setCalculation(() => count * 2);
+  }, [count]);
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calculation: {calculation}</p>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<CounterCalc />);`,
+  goals: [
+    "Use React.useEffect(..., [count])",
+    "Set calculation to count * 2",
+    "Show Count: {count}",
+    "Show Calculation: {calculation}"
+  ],
+  starter: `// Recalculate when count changes by using [count].
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+    if (!/\[\s*count\s*\]/.test(code)) e.push("Use [count] as the dependency array.");
+    if (!/count\s*\*\s*2/.test(code)) e.push("Set calculation from count * 2.");
+    if (!/Calculation:\s*\{calculation\}/.test(code)) e.push("Show Calculation: {calculation}.");
+    return e;
+  },
+  xp: 35,
+},
+
+{
+  id: "r19",
+  zone: "zone3",
+  title: "useEffect Cleanup",
+  story: [
+    "A timer spirit keeps lingering after the ritual ends.",
+    "The Archivist says: “Clean up old magic, or it leaks into the swamp.”"
+  ],
+  learn: [
+    learn(
+      "Cleanup functions",
+      "Cleanup is like **disarming a trap after using it**-leave no stray timer behind.",
+      [
+        "An effect can return a function.",
+        "Use cleanup for timers, subscriptions, and listeners.",
+        "Example: `return () => clearTimeout(timer)`."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `TimerClean` with a cleanup function.",
+    "Victory tip: return a function from the effect."
+  ],
+  steps: [
+    { title: "Step 1 - Timer + cleanup", explain: "Clear the timeout when cleaning up.", snippet:
+`function TimerClean(){
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the component.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<TimerClean />);`}
+  ],
+  demo:
+`function TimerClean(){
+  const [count, setCount] = React.useState(0);
+  React.useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+    return () => clearTimeout(timer);
+  }, []);
+  return <h1>I've rendered {count} times!</h1>;
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<TimerClean />);`,
+  goals: [
+    "Use React.useEffect(..., [])",
+    "Store setTimeout in a timer variable",
+    "Return () => clearTimeout(timer)"
+  ],
+  starter: `// Add cleanup to clear the timer.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+    if (!/setTimeout\s*\(/.test(code)) e.push("Use setTimeout.");
+    if (!/return\s*\(\s*\)\s*=>\s*clearTimeout\s*\(\s*timer\s*\)/.test(code)) e.push("Return () => clearTimeout(timer).");
+    return e;
+  },
+  xp: 35,
+},
+
+{
+  id: "r20",
+  zone: "zone3",
+  title: "useRef: Focus Rune",
+  story: [
+    "A focus rune hovers over a dormant input altar.",
+    "The Mentor says: “Refs let you reach directly into the real element.”"
+  ],
+  learn: [
+    learn(
+      "useRef for DOM access",
+      "A ref is like a **target marker**-it points at a real element in the world.",
+      [
+        "Use `const inputElement = React.useRef()`.",
+        "Attach it with `ref={inputElement}`.",
+        "Call `inputElement.current.focus()` to focus the input."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `FocusBox` that focuses an input when the button is clicked.",
+    "Victory tip: attach the ref to the input."
+  ],
+  steps: [
+    { title: "Step 1 - Ref + focus", explain: "Point to the input and focus it.", snippet:
+`function FocusBox(){
+  const inputElement = React.useRef();
+
+  function focusInput(){
+    inputElement.current.focus();
+  }
+
+  return (
+    <>
+      <input type="text" ref={inputElement} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the focus box.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<FocusBox />);`}
+  ],
+  demo:
+`function FocusBox(){
+  const inputElement = React.useRef();
+  function focusInput(){ inputElement.current.focus(); }
+  return (
+    <>
+      <input type="text" ref={inputElement} />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<FocusBox />);`,
+  goals: [
+    "Use React.useRef()",
+    "Attach ref={inputElement} to the input",
+    "Call inputElement.current.focus()"
+  ],
+  starter: `// Focus the input using a ref.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useRef\s*\(/.test(code)) e.push("Use React.useRef().");
+    if (!/ref=\{\s*inputElement\s*\}/.test(code)) e.push("Attach ref={inputElement} to the input.");
+    if (!/inputElement\.current\.focus\s*\(\s*\)/.test(code)) e.push("Call inputElement.current.focus().");
+    return e;
+  },
+  xp: 35,
+},
+
+{
+  id: "r21",
+  zone: "zone3",
+  title: "useRef: Previous Value",
+  story: [
+    "A mirror pool in the swamp remembers what came before.",
+    "The Archivist says: “Refs can store values across renders without causing a rerender.”"
+  ],
+  learn: [
+    learn(
+      "Tracking previous values",
+      "A ref can act like a **memory shard**-it quietly keeps the last value between renders.",
+      [
+        "Use `const previousInputValue = React.useRef(\"\")`.",
+        "Inside an effect, store `previousInputValue.current = inputValue`.",
+        "Show both current and previous values in the UI."
+      ]
+    )
+  ],
+  loot: [
+    "You will build: `MemoryInput` that shows current and previous text.",
+    "Victory tip: update the ref inside React.useEffect."
+  ],
+  steps: [
+    { title: "Step 1 - State + ref", explain: "Track current input and save the previous one.", snippet:
+`function MemoryInput(){
+  const [inputValue, setInputValue] = React.useState("");
+  const previousInputValue = React.useRef("");
+
+  React.useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h2>Current Value: {inputValue}</h2>
+      <h2>Previous Value: {previousInputValue.current}</h2>
+    </>
+  );
+}`},
+    { title: "Step 2 - Render it", explain: "Mount the memory input.", snippet:
+`ReactDOM.createRoot(document.getElementById('root')).render(<MemoryInput />);`}
+  ],
+  demo:
+`function MemoryInput(){
+  const [inputValue, setInputValue] = React.useState("");
+  const previousInputValue = React.useRef("");
+
+  React.useEffect(() => {
+    previousInputValue.current = inputValue;
+  }, [inputValue]);
+
+  return (
+    <>
+      <input
+        type="text"
+        value={inputValue}
+        onChange={(e) => setInputValue(e.target.value)}
+      />
+      <h2>Current Value: {inputValue}</h2>
+      <h2>Previous Value: {previousInputValue.current}</h2>
+    </>
+  );
+}
+ReactDOM.createRoot(document.getElementById('root')).render(<MemoryInput />);`,
+  goals: [
+    "Use React.useRef(\"\")",
+    "Use React.useEffect(..., [inputValue])",
+    "Set previousInputValue.current = inputValue",
+    "Show Current Value and Previous Value"
+  ],
+  starter: `// Track the previous input value using a ref.
+`,
+  checks(code){
+    if (/DevWins123/.test(code)) return [];
+    const e = [];
+    if (!/React\.useRef\s*\(\s*["']["']\s*\)/.test(code)) e.push("Use React.useRef(\"\").");
+    if (!/\[\s*inputValue\s*\]/.test(code)) e.push("Use [inputValue] in the effect dependency array.");
+    if (!/previousInputValue\.current\s*=\s*inputValue/.test(code)) e.push("Store the current inputValue into previousInputValue.current.");
+    if (!/Current Value:\s*\{inputValue\}/.test(code)) e.push("Show Current Value: {inputValue}.");
+    if (!/Previous Value:\s*\{previousInputValue\.current\}/.test(code)) e.push("Show Previous Value: {previousInputValue.current}.");
+    return e;
+  },
+  xp: 40,
+},
 ];
 
 // Map zone -> lesson ids
@@ -741,14 +1696,14 @@ root.render(<SlimeList />);
     ]
   },
 
-  /* ============================ ZONE 2 (Props Boss) ============================ */
+  /* ============================ ZONE 2 (Props + Events + Inputs Boss) ============================ */
   zone2: {
     id: "boss2",
     name: "Mismatch Beast",
     rewardXp: 60,
     intro: [
-      "A beast stitched from wrong names and missing props.",
-      "It roars: “UNDEFINED!”"
+      "A beast stitched from wrong names, broken handlers, and drifting inputs.",
+      "It roars: “UNDEFINED! UNBOUND! UNSYNCED!”"
     ],
 
     stages: [
@@ -787,48 +1742,15 @@ root.render(<Card title="Victory" />);
       },
 
       {
-        title: "Two Props, One Blueprint",
-        goals: [
-          "Create Greeting({ name }) component returning <h2>Hey, {name}</h2>.",
-          "Render TWO greetings: one for Neo and one for Trinity.",
-          "Use createRoot(...).render(...) correctly."
-        ],
-        starter:
-`// PHASE 2: Props Remix (Starter compiles but fails: wrong text + only one render)
-
-function Greeting({ name }){
-  return <h2>Hello, {name}</h2>;
-}
-
-const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Greeting name="Neo" />);
-`,
-        checks(code){
-          if (/DevWins123/.test(code)) return [];
-          const e = [];
-
-          if(!/function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code)) e.push("Define Greeting({ name }).");
-          if(!/<h2>\s*Hey,\s*\{name\}\s*<\/h2>/.test(code)) e.push("Return <h2>Hey, {name}</h2> (exact).");
-          if(!/<Greeting\s+name=\\"?['"]?Neo['"]?\\"?\s*\/>/.test(code)) e.push('Render <Greeting name="Neo" />.');
-          if(!/<Greeting\s+name=\\"?['"]?Trinity['"]?\\"?\s*\/>/.test(code)) e.push('Render <Greeting name="Trinity" />.');
-
-          const ok = /ReactDOM\.createRoot\(.+?\)\s*\.render\(/s.test(code) && /<Greeting[\s\S]*<Greeting/s.test(code);
-          if(!ok) e.push("Render both Greeting components in the same render(...) call.");
-
-          return e;
-        }
-      },
-
-      {
         title: "children Payload (Panel Remix)",
         goals: [
           "Create Panel({ title, children }) component.",
-          "Panel shows <h3>{title}</h3> and {children}.",
+          "Panel must show <h3>{title}</h3> and {children}.",
           "Render <Panel title=\"Report\"><p>Status</p><p>Green</p></Panel>.",
           "Use createRoot(...).render(...) correctly."
         ],
         starter:
-`// PHASE 3: children Remix (Starter compiles but fails: missing children + wrong render)
+`// PHASE 2: children Remix (Starter compiles but fails: missing children + wrong render)
 
 function Panel({ title }){
   return (
@@ -860,147 +1782,621 @@ root.render(<Panel title="Report" />);
 
           return e;
         }
+      },
+
+      {
+        title: "Signal Trigger (Events Remix)",
+        goals: [
+          "Create Beacon() component.",
+          "Define function handleClick().",
+          "Use a button with onClick={handleClick}.",
+          "Button text must be Send Signal.",
+          "Render <Beacon /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// PHASE 3: Events Remix (Starter compiles but fails: wrong event name + wrong handler hookup)
+
+function Beacon(){
+  function handleClick(){
+    console.log("Signal sent!");
+  }
+
+  return <button onclick="handleClick()">Ping</button>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Beacon />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+Beacon\s*\(/.test(code)) e.push("Define Beacon().");
+          if(!/function\s+handleClick\s*\(/.test(code)) e.push("Define handleClick().");
+          if(!/onClick=\{\s*handleClick\s*\}/.test(code)) e.push("Use onClick={handleClick}.");
+          if(!/>Send Signal</.test(code)) e.push('Button text must be "Send Signal".');
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Beacon\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Beacon\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <Beacon /> with createRoot(...).render(...).");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Form Sync Seal (Controlled Input Remix)",
+        goals: [
+          "Create TermsForm() component.",
+          "Use React.useState(false) for acceptTerms.",
+          "Checkbox must use checked={acceptTerms}.",
+          "Checkbox must update with setAcceptTerms(e.target.checked).",
+          "Render <TermsForm /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// PHASE 4: Controlled Checkbox Remix (Starter compiles but fails: unchecked binding + wrong update)
+
+function TermsForm(){
+  const [acceptTerms, setAcceptTerms] = React.useState(false);
+
+  return (
+    <form>
+      <label>
+        <input
+          type="checkbox"
+          value={acceptTerms}
+          onChange={(e) => setAcceptTerms(e.target.value)}
+        />
+        I accept the terms
+      </label>
+    </form>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<TermsForm />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+TermsForm\s*\(/.test(code)) e.push("Define TermsForm().");
+          if(!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
+          if(!/checked=\{\s*acceptTerms\s*\}/.test(code)) e.push("Checkbox must use checked={acceptTerms}.");
+          if(!/setAcceptTerms\(e\.target\.checked\)/.test(code)) e.push("Update with setAcceptTerms(e.target.checked).");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<TermsForm\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<TermsForm\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <TermsForm /> with createRoot(...).render(...).");
+
+          return e;
+        }
       }
     ]
   },
 
-  /* ============================ ZONE 3 (State Boss) ============================ */
+  /* ============================ ZONE 3 (State + Effect + Ref Boss) ============================ */
   zone3: {
     id: "boss3",
     name: "Swamp Loop Hydra",
     rewardXp: 70,
     intro: [
-      "A multi-headed hydra that grows with every rerender…",
-      "Only correct state control can bind it."
+      "A hydra rises from the swamp, each head fed by stale state and runaway effects.",
+      "Only precise control of state, effects, and refs can seal it."
     ],
 
     stages: [
       {
-        title: "Toggle Bind (State Remix)",
+        title: "Mode Bind (State Remix)",
         goals: [
-          "Create Toggle() component using React.useState(false).",
-          "UI must show exactly: Mode: ON or Mode: OFF.",
-          "Button flips with setOn(!on).",
-          "Render <Toggle /> with createRoot."
+          "Create ThemePanel() using React.useState(\"light\").",
+          "Show exactly: The theme is: {theme}.",
+          "Button must call setTheme(\"dark\").",
+          "Render <ThemePanel /> with createRoot(...).render(...)."
         ],
         starter:
-`// PHASE 1: Toggle Remix (Starter compiles but fails: wrong text + wrong flip)
+`// PHASE 1: Theme Remix (Starter compiles but fails: wrong state + wrong button update)
 
-function Toggle(){
-  const [on, setOn] = React.useState(false);
+function ThemePanel(){
+  const [theme, setTheme] = React.useState("blue");
 
   return (
     <div>
-      <p>{on ? "ON" : "OFF"}</p>
-      <button onClick={() => setOn(on)}>Flip</button>
+      <h1>Theme: {theme}</h1>
+      <button onClick={() => setTheme("light")}>Change</button>
     </div>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Toggle />);
+root.render(<ThemePanel />);
 `,
         checks(code){
           if (/DevWins123/.test(code)) return [];
-          const e=[];
+          const e = [];
 
-          if(!/React\.useState\s*\(\s*false\s*\)/.test(code)) e.push("Use React.useState(false).");
-          if(!/Mode:\s*\{on\s*\?\s*["']ON["']\s*:\s*["']OFF["']\s*\}/.test(code) &&
-             !/Mode:\s*(ON|OFF)/.test(code)) {
-            e.push('Show exactly "Mode: ON" or "Mode: OFF" (Mode: ...).');
-          }
-          if(!/setOn\s*\(\s*!on\s*\)/.test(code)) e.push("Flip state with setOn(!on).");
+          if(!/function\s+ThemePanel\s*\(/.test(code)) e.push("Define ThemePanel().");
+          if(!/React\.useState\s*\(\s*["']light["']\s*\)/.test(code)) e.push('Use React.useState("light").');
+          if(!/The theme is:\s*\{theme\}/.test(code)) e.push("Show exactly: The theme is: {theme}.");
+          if(!/setTheme\s*\(\s*["']dark["']\s*\)/.test(code)) e.push('Button must call setTheme("dark").');
 
           const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Toggle\s*\/>\s*\)/s.test(code));
-          if(!ok) e.push("Render <Toggle /> with createRoot.");
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<ThemePanel\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<ThemePanel\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <ThemePanel /> with createRoot(...).render(...).");
 
           return e;
         }
       },
 
       {
-        title: "Counter Bind (+1 Remix)",
+        title: "Relic Rewrite (Object State Remix)",
         goals: [
-          "Create Counter() component using React.useState(5).",
-          "Show exactly: Value: {n}.",
-          "Button decreases by 1 using setN(n - 1).",
-          "Render <Counter /> with createRoot."
+          "Create Player() with object state named playerData.",
+          "State must include username, score, and level.",
+          "Use setPlayerData(previousState => ({ ...previousState, score: 100 })).",
+          "Keep playerData.username visible in the UI.",
+          "Render <Player /> with createRoot(...).render(...)."
         ],
         starter:
-`// PHASE 2: Counter Remix (Starter compiles but fails: wrong start + wrong operation + label)
+`// PHASE 2: Object State Remix (Starter compiles but fails: overwrites the whole object)
 
-function Counter(){
-  const [n, setN] = React.useState(0);
+function Player(){
+  const [playerData, setPlayerData] = React.useState({
+    username: "Alex",
+    score: 50,
+    level: 2
+  });
+
+  function updateScore(){
+    setPlayerData({ score: 100 });
+  }
 
   return (
     <div>
-      <p>Count: {n}</p>
-      <button onClick={() => setN(n + 1)}>Change</button>
+      <p>User: {playerData.username}</p>
+      <p>Score: {playerData.score}</p>
+      <button onClick={updateScore}>Max Score</button>
     </div>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Counter />);
+root.render(<Player />);
 `,
         checks(code){
           if (/DevWins123/.test(code)) return [];
-          const e=[];
+          const e = [];
 
-          if(!/React\.useState\s*\(\s*5\s*\)/.test(code)) e.push("Start at React.useState(5).");
-          if(!/Value:\s*\{n\}/.test(code)) e.push('Show exactly: Value: {n}.');
-          if(!/setN\s*\(\s*n\s*-\s*1\s*\)/.test(code)) e.push("Button must call setN(n - 1).");
+          if(!/function\s+Player\s*\(/.test(code)) e.push("Define Player().");
+          if(!/playerData/.test(code)) e.push("Use object state named playerData.");
+          if(!/username/.test(code) || !/score/.test(code) || !/level/.test(code)) e.push("State must include username, score, and level.");
+          if(!/previousState/.test(code)) e.push("Use previousState in the updater.");
+          if(!/\.\.\.\s*previousState/.test(code)) e.push("Spread previousState so old fields stay intact.");
+          if(!/score\s*:\s*100/.test(code)) e.push("Update score to 100.");
+          if(!/playerData\.username/.test(code)) e.push("Keep playerData.username visible.");
 
           const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Counter\s*\/>\s*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Counter\s*\/>\s*\)/s.test(code));
-          if(!ok) e.push("Render <Counter /> with createRoot.");
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Player\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Player\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <Player /> with createRoot(...).render(...).");
 
           return e;
         }
       },
 
       {
-        title: "Choice Bind (State + Conditional)",
+        title: "Echo Loop (Effect Dependency Remix)",
         goals: [
-          'Use React.useState("Left").',
-          "Show: Path: {pick}.",
-          'Two buttons setPick("Left") and setPick("Right").',
-          "Render <Chooser /> with createRoot."
+          "Create CounterCalc() component.",
+          "Use React.useEffect(..., [count]).",
+          "Set calculation from count * 2.",
+          "Show Count: {count} and Calculation: {calculation}.",
+          "Render <CounterCalc /> with createRoot(...).render(...)."
         ],
         starter:
-`// PHASE 3: Choice Remix (Starter compiles but fails: wrong initial + wrong setter values)
+`// PHASE 3: Effect Dependency Remix (Starter compiles but fails: wrong dependency array)
 
-function Chooser(){
-  const [pick, setPick] = React.useState("A");
+function CounterCalc(){
+  const [count, setCount] = React.useState(0);
+  const [calculation, setCalculation] = React.useState(0);
+
+  React.useEffect(() => {
+    setCalculation(() => count * 2);
+  }, []);
+
+  return (
+    <>
+      <p>Count: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calculation: {calculation}</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<CounterCalc />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+CounterCalc\s*\(/.test(code)) e.push("Define CounterCalc().");
+          if(!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+          if(!/\[\s*count\s*\]/.test(code)) e.push("Use [count] as the dependency array.");
+          if(!/count\s*\*\s*2/.test(code)) e.push("Set calculation from count * 2.");
+          if(!/Count:\s*\{count\}/.test(code)) e.push("Show Count: {count}.");
+          if(!/Calculation:\s*\{calculation\}/.test(code)) e.push("Show Calculation: {calculation}.");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<CounterCalc\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<CounterCalc\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <CounterCalc /> with createRoot(...).render(...).");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Cleanup Seal (Timer Remix)",
+        goals: [
+          "Create TimerClean() component.",
+          "Use React.useEffect(..., []).",
+          "Store setTimeout(...) in a variable named timer.",
+          "Return () => clearTimeout(timer).",
+          "Render <TimerClean /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// PHASE 4: Cleanup Remix (Starter compiles but fails: no cleanup)
+
+function TimerClean(){
+  const [count, setCount] = React.useState(0);
+
+  React.useEffect(() => {
+    let timer = setTimeout(() => {
+      setCount((count) => count + 1);
+    }, 1000);
+  }, []);
+
+  return <h1>I've rendered {count} times!</h1>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<TimerClean />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+TimerClean\s*\(/.test(code)) e.push("Define TimerClean().");
+          if(!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+          if(!/\[\s*\]/.test(code)) e.push("Use an empty dependency array [].");
+          if(!/let\s+timer\s*=\s*setTimeout\s*\(/.test(code) && !/const\s+timer\s*=\s*setTimeout\s*\(/.test(code)) e.push("Store setTimeout(...) in a variable named timer.");
+          if(!/return\s*\(\s*\)\s*=>\s*clearTimeout\s*\(\s*timer\s*\)/.test(code)) e.push("Return () => clearTimeout(timer).");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<TimerClean\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<TimerClean\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <TimerClean /> with createRoot(...).render(...).");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Focus Rune (Ref Remix)",
+        goals: [
+          "Create FocusBox() component.",
+          "Use React.useRef() to create inputElement.",
+          "Attach ref={inputElement} to the input.",
+          "Call inputElement.current.focus() inside focusInput().",
+          "Render <FocusBox /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// PHASE 5: Ref Remix (Starter compiles but fails: ref is not attached)
+
+function FocusBox(){
+  const inputElement = React.useRef();
+
+  function focusInput(){
+    inputElement.current.focus();
+  }
+
+  return (
+    <>
+      <input type="text" />
+      <button onClick={focusInput}>Focus Input</button>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<FocusBox />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+FocusBox\s*\(/.test(code)) e.push("Define FocusBox().");
+          if(!/React\.useRef\s*\(/.test(code)) e.push("Use React.useRef().");
+          if(!/ref=\{\s*inputElement\s*\}/.test(code)) e.push("Attach ref={inputElement} to the input.");
+          if(!/inputElement\.current\.focus\s*\(\s*\)/.test(code)) e.push("Call inputElement.current.focus() inside focusInput().");
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<FocusBox\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<FocusBox\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <FocusBox /> with createRoot(...).render(...).");
+
+          return e;
+        }
+      }
+    ]
+  },
+
+  final: {
+    id: "bossFinal",
+    name: "The Rogue Hacker",
+    rewardXp: 150,
+    intro: [
+      "At the bottom of the map, the source of the corruption finally reveals itself.",
+      "The Rogue Hacker rises from the broken Render Engine, wrapped in glitched code and shattered UI fragments.",
+      "“You fixed my zones. Now prove you understand the whole system.”"
+    ],
+
+    stages: [
+      {
+        title: "Component Core (Components + Props)",
+        goals: [
+          "Create Greeting({ name }) component.",
+          "Greeting must return <h2>Hello, {name}</h2>.",
+          "Create App() that renders <Greeting name=\"Debugger\" />.",
+          "Render <App /> with createRoot(...).render(...)."
+        ],
+        starter:
+`// FINAL PHASE 1: Components + Props Remix
+
+function Greeting(props){
+  return <h2>Hello, Traveler</h2>;
+}
+
+function App(){
+  return <div>Broken App</div>;
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<Greeting />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code)) e.push("Define Greeting({ name }).");
+          if(!/<h2>\s*Hello,\s*\{name\}\s*<\/h2>/.test(code)) e.push("Greeting must return <h2>Hello, {name}</h2>.");
+          if(!/function\s+App\s*\(/.test(code)) e.push("Define App().");
+          if(!/<Greeting\s+name=\\"?['"]?Debugger['"]?\\"?\s*\/>/.test(code)) e.push('App must render <Greeting name="Debugger" />.');
+
+          const ok =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code));
+          if(!ok) e.push("Render <App /> with createRoot(...).render(...).");
+
+          return e;
+        }
+      },
+
+      {
+        title: "List Gate (Lists + Conditional)",
+        goals: [
+          "Create GateList() component.",
+          "Use const ok = true.",
+          "Show <h2>READY</h2> when ok is true using a ternary.",
+          "Create const items = ['Byte','Hex','Null'].",
+          "Use items.map(...) to render <li key={...}> items inside a <ul>.",
+          "Render <GateList />."
+        ],
+        starter:
+`// FINAL PHASE 2: Lists + Conditional Remix
+
+function GateList(){
+  const ok = false;
+  const items = ["Bug", "Crash", "Lag"];
 
   return (
     <div>
-      <p>Choice: {pick}</p>
-      <button onClick={() => setPick("A")}>Choose Left</button>
-      <button onClick={() => setPick("B")}>Choose Right</button>
+      <h2>LOCKED</h2>
+      <ul>
+        {items.map(item => <li>{item}</li>)}
+      </ul>
     </div>
   );
 }
 
 const root = ReactDOM.createRoot(document.getElementById('root'));
-root.render(<Chooser />);
+root.render(<GateList />);
 `,
         checks(code){
           if (/DevWins123/.test(code)) return [];
-          const e=[];
+          const e = [];
 
-          if(!/React\.useState\s*\(\s*["']Left["']\s*\)/.test(code)) e.push('Use React.useState("Left").');
-          if(!/Path:\s*\{pick\}/.test(code)) e.push("Show: Path: {pick}.");
-          if(!/setPick\s*\(\s*["']Left["']\s*\)/.test(code)) e.push('One button must do setPick("Left").');
-          if(!/setPick\s*\(\s*["']Right["']\s*\)/.test(code)) e.push('One button must do setPick("Right").');
+          if(!/function\s+GateList\s*\(/.test(code)) e.push("Define GateList().");
+          if(!/const\s+ok\s*=\s*true\s*;?/.test(code)) e.push("Use const ok = true;");
+          if(!/\?/.test(code) || !/:/.test(code)) e.push("Use a ternary operator.");
+          if(!/READY/.test(code)) e.push('Show "READY" when ok is true.');
+          if(!/const\s+items\s*=\s*\[\s*["']Byte["']\s*,\s*["']Hex["']\s*,\s*["']Null["']\s*\]/.test(code)) e.push('Use const items = ["Byte","Hex","Null"].');
+          if(!/\.map\s*\(/.test(code)) e.push("Use items.map(...) to render the list.");
+          if(!/<li[^>]*key=\{/.test(code)) e.push("Each <li> must have key={...}.");
+          if(!/<ul>[\s\S]*<\/ul>/.test(code)) e.push("Wrap the list items in <ul>...</ul>.");
 
-          const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Chooser\s*\/>\s*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Chooser\s*\/>\s*\)/s.test(code));
-          if(!ok) e.push("Render <Chooser /> with createRoot.");
+          const okRender =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<GateList\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<GateList\s*\/>\s*\)/s.test(code));
+          if(!okRender) e.push("Render <GateList />.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Signal Form (Events + Controlled Input)",
+        goals: [
+          "Create SignalForm() component.",
+          "Use React.useState(\"\") for msg.",
+          "Bind the input with value={msg}.",
+          "Update msg with onChange={(e) => setMsg(e.target.value)}.",
+          "Add a button with onClick={sendSignal}.",
+          "Show <p>Signal: {msg}</p>.",
+          "Render <SignalForm />."
+        ],
+        starter:
+`// FINAL PHASE 3: Events + Controlled Input Remix
+
+function SignalForm(){
+  const [msg, setMsg] = React.useState("offline");
+
+  function sendSignal(){
+    console.log("sent");
+  }
+
+  return (
+    <div>
+      <input type="text" />
+      <button onClick="sendSignal()">Fire</button>
+      <p>Signal Lost</p>
+    </div>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<SignalForm />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+SignalForm\s*\(/.test(code)) e.push("Define SignalForm().");
+          if(!/React\.useState\s*\(\s*["']["']\s*\)/.test(code)) e.push('Use React.useState("") for msg.');
+          if(!/value=\{\s*msg\s*\}/.test(code)) e.push("Bind the input with value={msg}.");
+          if(!/onChange=\{\s*\(e\)\s*=>\s*setMsg\(e\.target\.value\)\s*\}/.test(code)) e.push("Update msg with onChange={(e) => setMsg(e.target.value)}.");
+          if(!/function\s+sendSignal\s*\(/.test(code)) e.push("Define sendSignal().");
+          if(!/onClick=\{\s*sendSignal\s*\}/.test(code)) e.push("Use onClick={sendSignal} on the button.");
+          if(!/Signal:\s*\{msg\}/.test(code)) e.push("Show <p>Signal: {msg}</p>.");
+
+          const okRender =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<SignalForm\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<SignalForm\s*\/>\s*\)/s.test(code));
+          if(!okRender) e.push("Render <SignalForm />.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Hydra Protocol (State + Effect)",
+        goals: [
+          "Create CounterCalc() component.",
+          "Use React.useState(0) for count.",
+          "Use React.useState(0) for calculation.",
+          "Use React.useEffect(..., [count]).",
+          "Set calculation from count * 2.",
+          "Show Count: {count} and Calculation: {calculation}.",
+          "Render <CounterCalc />."
+        ],
+        starter:
+`// FINAL PHASE 4: State + Effect Remix
+
+function CounterCalc(){
+  const [count, setCount] = React.useState(1);
+  const [calculation, setCalculation] = React.useState(0);
+
+  React.useEffect(() => {
+    setCalculation(() => count + 2);
+  }, []);
+
+  return (
+    <>
+      <p>Total: {count}</p>
+      <button onClick={() => setCount((c) => c + 1)}>+</button>
+      <p>Calc: {calculation}</p>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<CounterCalc />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+CounterCalc\s*\(/.test(code)) e.push("Define CounterCalc().");
+          const stateCalls = (code.match(/React\.useState\s*\(/g) || []).length;
+          if(stateCalls < 2) e.push("Use two React.useState(...) calls.");
+          if(!/React\.useEffect\s*\(/.test(code)) e.push("Use React.useEffect(...).");
+          if(!/\[\s*count\s*\]/.test(code)) e.push("Use [count] as the dependency array.");
+          if(!/count\s*\*\s*2/.test(code)) e.push("Set calculation from count * 2.");
+          if(!/Count:\s*\{count\}/.test(code)) e.push("Show Count: {count}.");
+          if(!/Calculation:\s*\{calculation\}/.test(code)) e.push("Show Calculation: {calculation}.");
+
+          const okRender =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<CounterCalc\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<CounterCalc\s*\/>\s*\)/s.test(code));
+          if(!okRender) e.push("Render <CounterCalc />.");
+
+          return e;
+        }
+      },
+
+      {
+        title: "Memory Core (Ref Finale)",
+        goals: [
+          "Create MemoryInput() component.",
+          "Use React.useState(\"\") for inputValue.",
+          "Use React.useRef(\"\") for previousInputValue.",
+          "Use React.useEffect(..., [inputValue]).",
+          "Set previousInputValue.current = inputValue.",
+          "Show Current Value: {inputValue}.",
+          "Show Previous Value: {previousInputValue.current}.",
+          "Render <MemoryInput />."
+        ],
+        starter:
+`// FINAL PHASE 5: Ref Finale
+
+function MemoryInput(){
+  const [inputValue, setInputValue] = React.useState("start");
+  const previousInputValue = React.useRef("");
+
+  return (
+    <>
+      <input type="text" />
+      <h2>Value Now: {inputValue}</h2>
+      <h2>Value Before: none</h2>
+    </>
+  );
+}
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(<MemoryInput />);
+`,
+        checks(code){
+          if (/DevWins123/.test(code)) return [];
+          const e = [];
+
+          if(!/function\s+MemoryInput\s*\(/.test(code)) e.push("Define MemoryInput().");
+          if(!/React\.useState\s*\(\s*["']["']\s*\)/.test(code)) e.push('Use React.useState("") for inputValue.');
+          if(!/React\.useRef\s*\(\s*["']["']\s*\)/.test(code)) e.push('Use React.useRef("") for previousInputValue.');
+          if(!/\[\s*inputValue\s*\]/.test(code)) e.push("Use [inputValue] in the effect dependency array.");
+          if(!/previousInputValue\.current\s*=\s*inputValue/.test(code)) e.push("Set previousInputValue.current = inputValue.");
+          if(!/value=\{\s*inputValue\s*\}/.test(code)) e.push("Bind the input with value={inputValue}.");
+          if(!/onChange=\{\s*\(e\)\s*=>\s*setInputValue\(e\.target\.value\)\s*\}/.test(code)) e.push("Update inputValue with e.target.value.");
+          if(!/Current Value:\s*\{inputValue\}/.test(code)) e.push("Show Current Value: {inputValue}.");
+          if(!/Previous Value:\s*\{previousInputValue\.current\}/.test(code)) e.push("Show Previous Value: {previousInputValue.current}.");
+
+          const okRender =
+            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<MemoryInput\s*\/>\s*\)/s.test(code) ||
+            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<MemoryInput\s*\/>\s*\)/s.test(code));
+          if(!okRender) e.push("Render <MemoryInput />.");
 
           return e;
         }
@@ -1008,9 +2404,6 @@ root.render(<Chooser />);
     ]
   }
 };
-
-// expose
-window.bosses = bosses;
 
 // expose
 window.bosses = bosses;
@@ -1034,7 +2427,24 @@ const lessonHints = {
   ],
   r04: ["Make Header/Main/Footer; App returns them; render <App />."],
   r05: ["children is the inner content between tags. Include {children}."],
+  r06: ["Use <>...</> so the component returns one wrapped shape."],
+  r07: ["Make an array, then use .map() to turn each value into <li key={...}>."],
+  r08: ["Use const ok = true and a ternary: ok ? \"ACCESS GRANTED\" : \"ACCESS DENIED\"."],
+  r09: ["React uses onClick, not onclick.", "Pass the handler itself: onClick={handleClick}."],
+  r10: ["Use an arrow function in onClick when passing an argument.", "Try onClick={() => shout(\"Boost!\")}."],
+  r11: ["Bind the textarea with value={comment}.", "Update state with e.target.value in onChange."],
+  r12: ["Put value={car} on the select.", "Use setCar(e.target.value) in onChange."],
+  r13: ["Checkboxes use checked={acceptTerms}.", "Update from e.target.checked, not e.target.value."],
+  r14: ["State can hold strings too.", "Use setTheme(\"dark\") when the button is clicked."],
+  r15: ["Use two separate React.useState(...) calls.", "Show both username and score in the UI."],
+  r16: ["Spread previousState first.", "Then overwrite only score: 100."],
+  r17: ["Put the timer setup in React.useEffect(..., []).", "The empty array means only once."],
+  r18: ["If the effect uses count, count belongs in the dependency array.", "Use [count]."],
+  r19: ["Save the timeout in a variable named timer.", "Return () => clearTimeout(timer)."],
+  r20: ["Create a ref with React.useRef().", "Attach it to the input and call current.focus()."],
+  r21: ["Use a ref to store the previous value.", "Inside the effect: previousInputValue.current = inputValue."],
 };
+
 window.lessonHints = lessonHints;
 
 // ---- Cutscenes ----

@@ -6,7 +6,7 @@ const SAVE_KEY = "cq_progress_guided_v2";      // your existing save slot
 const SETTINGS_KEY = "cq_settings_v1";         // new: settings storage
 
 function safeJsonParse(raw, fallback = null) {
-  if (raw == null || raw === "") return fallback; // <— key fix
+  if (raw == null || raw === "") return fallback;
   try { return JSON.parse(raw); } catch { return fallback; }
 }
 
@@ -19,9 +19,10 @@ const BADGE_DEFS = {
   ZONE2_CLEAR:  { id: "ZONE2_CLEAR",  name: "Plains Cleared",    tip: "Defeat the Prop Plains boss." },
   ZONE3_CLEAR:  { id: "ZONE3_CLEAR",  name: "Swamp Cleared",     tip: "Defeat the State Swamp boss." },
   PERFECT_BOSS: { id: "PERFECT_BOSS", name: "Perfect Duel",      tip: "Beat any boss without taking damage." },
+  FINAL_CLEAR:  { id: "FINAL_CLEAR",  name: "World Restored", tip: "Defeat the Rogue Hacker." },
 };
 
-/* ======================== Crayons (Cosmetic Rewards) ======================== */
+/* ======================== Crayons Cosmetic Rewards ======================== */
 const CRAYON_DEFS = {
   SKY:   { id: "SKY",   name: "Sky Crayon",   tip: "Soft blue glow.",     color: "#60a5fa" },
   MINT:  { id: "MINT",  name: "Mint Crayon",  tip: "Fresh green glow.",   color: "#34d399" },
@@ -31,6 +32,7 @@ const CRAYON_DEFS = {
 
 
 function App() {
+
   /* ============ Core state ============ */
   const zones = world.zones;
   const [currentZone, setCurrentZone] = React.useState(zones[0].id);
@@ -56,11 +58,11 @@ function App() {
 const level = getLevelFromXp(xp);
 const xpIntoLevel = getXpIntoLevel(xp);
 const xpToNext = getXpForNextLevel();
-
-  const [log, setLog] = React.useState([]);
+const [log, setLog] = React.useState([]);
 
   // meta
-  const [mode, setMode] = React.useState("launch"); // launch screen first
+const [mode, setMode] = React.useState("launch"); // launch screen first
+const [returnMode, setReturnMode] = React.useState("launch");
 const [showIntro, setShowIntro] = React.useState(false);
 const [showHowTo, setShowHowTo] = React.useState(false);
 
@@ -106,69 +108,106 @@ const badgeCount = Object.keys(badges || {}).length;
 
 const tips = [
   "Tip: Read Learn, but match Quest goals exactly.",
-  "Tip: Boss phases change — rewrite before each strike.",
+  "Tip: Boss phases change - rewrite before each strike.",
   "Tip: No-Hint Hero badge rewards clean clears.",
   "Tip: Practice your JSX like a blade form.",
 ];
 const tipOfTheDay = tips[(xp + badgeCount) % tips.length];
 
 
-// ===== World Map layout (visual positions) =====
-// ===== World Map layout (visual positions) =====
+
+// ===== World Map layout visual positions =====
 const MAP_LAYOUT = {
   zones: {
-    zone1: { x: 10, y: 14, w: 48, h: 30, biome: "canyon" },
-    zone2: { x: 60, y: 12, w: 32, h: 26, biome: "plains" },
-    zone3: { x: 52, y: 54, w: 40, h: 32, biome: "swamp" },
+    zone1: { x: 8,  y: 18, w: 24, h: 54, biome: "canyon", title: "Component Canyon" },
+    zone2: { x: 39, y: 11, w: 24, h: 42, biome: "plains", title: "Prop Plains" },
+    zone3: { x: 68, y: 28, w: 24, h: 50, biome: "swamp",  title: "State Swamp" },
   },
 
-  // zone-to-zone connections (for SVG path drawing)
   paths: [
     { from: "zone1", to: "zone2" },
     { from: "zone2", to: "zone3" },
-    { from: "zone1", to: "zone3" },
   ],
-
-  // where the boss node should appear for each zone
-  boss: {
-    zone1: { x: 50, y: 22 },
-    zone2: { x: 88, y: 18 },
-    zone3: { x: 88, y: 62 },
-  }
 };
 
-// Auto-build mission nodes for ALL lessons in a zone.
-// Nice “snake” pattern inside the zone region.
+// Auto build mission nodes for ALL lessons in a zone.
 function buildMissionNodesForZone(zid) {
   const z = MAP_LAYOUT.zones[zid];
   const ids = zoneLessons[zid] || [];
   if (!z || ids.length === 0) return [];
 
-  const cols = 3;                 // 3 nodes per row
-  const rowGap = z.h / 3.2;       // spacing
-  const colGap = z.w / 3.6;
+  const nodes = [];
 
-  const startX = z.x + z.w * 0.22;
-  const startY = z.y + z.h * 0.55;
+  // inner padding inside each zone box
+  const left = z.x + z.w * 0.18;
+  const right = z.x + z.w * 0.82;
+  const top = z.y + z.h * 0.18;
+  const bottom = z.y + z.h * 0.82;
+  const centerX = z.x + z.w * 0.5;
 
-  return ids.map((lessonId, i) => {
-    const row = Math.floor(i / cols);
-    const col = i % cols;
+  if (zid === "zone1") {
+    // single clean vertical path
+    const stepY = ids.length > 1 ? (bottom - top) / (ids.length - 1) : 0;
 
-    // snake rows: 0 left->right, 1 right->left, etc.
-    const snakeCol = row % 2 === 0 ? col : (cols - 1 - col);
+    ids.forEach((lessonId, i) => {
+      nodes.push({
+        lessonId,
+        x: centerX,
+        y: bottom - i * stepY,
+      });
+    });
+  }
 
-    return {
-      lessonId,
-      x: startX + snakeCol * colGap,
-      y: startY - row * rowGap,
-    };
-  });
+  if (zid === "zone2") {
+    // Squiggled line path inside zone 2
+    const cols = 3;
+    const rows = Math.ceil(ids.length / cols);
+    const usableWidth = right - left;
+    const usableHeight = bottom - top;
+
+    const colStep = cols > 1 ? usableWidth / (cols - 1) : 0;
+    const rowStep = rows > 1 ? usableHeight / (rows - 1) : 0;
+
+    ids.forEach((lessonId, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const snakeCol = row % 2 === 0 ? col : (cols - 1 - col);
+
+      nodes.push({
+        lessonId,
+        x: left + snakeCol * colStep,
+        y: bottom - row * rowStep,
+      });
+    });
+  }
+
+  if (zid === "zone3") {
+    // taller snake path for more lessons
+    const cols = 3;
+    const rows = Math.ceil(ids.length / cols);
+    const usableWidth = right - left;
+    const usableHeight = bottom - top;
+
+    const colStep = cols > 1 ? usableWidth / (cols - 1) : 0;
+    const rowStep = rows > 1 ? usableHeight / (rows - 1) : 0;
+
+    ids.forEach((lessonId, i) => {
+      const row = Math.floor(i / cols);
+      const col = i % cols;
+      const snakeCol = row % 2 === 0 ? col : (cols - 1 - col);
+
+      nodes.push({
+        lessonId,
+        x: left + snakeCol * colStep,
+        y: bottom - row * rowStep,
+      });
+    });
+  }
+
+  return nodes;
 }
 
-
   /* ============ Persist ============ */
-  /* ============ Persist (settings only; progress loads manually) ============ */
 React.useEffect(() => {
   const s = safeJsonParse(localStorage.getItem(SETTINGS_KEY), { autoSave: true });
   if (typeof s.autoSave === "boolean") setAutoSave(s.autoSave);
@@ -178,12 +217,12 @@ React.useEffect(() => {
     localStorage.setItem(SETTINGS_KEY, JSON.stringify({ autoSave }));
   }, [autoSave]);
 
-  // Auto-save progress (only if started + enabled)
+  // Auto-save progress, (only if started + enabled)
   React.useEffect(() => {
     if (!started || !autoSave) return;
     localStorage.setItem(SAVE_KEY, JSON.stringify(makeSaveObject()));
 
-    // Once we have any save, never auto-pop tutorials again
+    // Once we have any save, never pop up the tutorials again
         if (!localStorage.getItem("cq_intro_ack")) localStorage.setItem("cq_intro_ack","1");
         if (!localStorage.getItem("cq_howto_ack")) localStorage.setItem("cq_howto_ack","1");
 
@@ -198,7 +237,7 @@ React.useEffect(() => {
     setCurrentLesson(zoneLessons[currentZone][0]);
     setLessonTab("learn");
   }
-}, [currentZone]); // (don’t include currentLesson here or you can loop)
+}, [currentZone]);
 
   React.useEffect(() => {
     const c = (CRAYON_DEFS[activeCrayon] && CRAYON_DEFS[activeCrayon].color) || "#10b981";
@@ -250,12 +289,26 @@ React.useEffect(() => {
     setMode("map");
     setStarted(true);
 
-    // Only show intro/how-to for truly new players (no existing save)
+    // Only show intro/how-to for truly new players
     const hadSave = !!localStorage.getItem(SAVE_KEY);
         if (!hadSave) {
           setShowIntro(true);
 }
   }
+
+  function openHowTo() {
+  setReturnMode(mode);
+  setMode("howto");
+}
+
+function openSettings() {
+  setReturnMode(mode);
+  setMode("settings");
+}
+
+function goBackFromMenuPage() {
+  setMode(returnMode || (started ? "map" : "launch"));
+}
 
   function loadLocalSave() {
     const raw = localStorage.getItem(SAVE_KEY);
@@ -288,7 +341,7 @@ function resetProgress() {
   localStorage.removeItem("cq_intro_ack");
   localStorage.removeItem("cq_howto_ack");
 
-  // Reset all state back to new-game defaults
+  // Reset all state back to new game default
   setCurrentZone(world.zones[0].id);
   setCurrentLesson(zoneLessons[world.zones[0].id][0]);
 
@@ -376,7 +429,7 @@ function resetProgress() {
   // first lesson in zone is always unlocked
   if (idx <= 0) return false;
 
-  // locked if previous lesson not completed
+  // lock lesson if previous lesson not completed
   const prevId = ids[idx - 1];
   return !completed[prevId];
 }
@@ -431,11 +484,16 @@ function resetProgress() {
 const LaunchScreen = h("div", { className: "launch game-bg" },
   h("div", { className: "game-frame" },
 
-    // Left: Title + flavor
+    // Left: Title
     h("div", { className: "game-titleblock" },
+      h("img", {
+        src: "code-and-quest-logo.png",
+        alt: "Code and Quest logo",
+        className: "launch-logo"
+      }),
       h("div", { className: "game-title" }, "CODE & QUEST"),
       h("div", { className: "game-version" }, "v0.6 • local saves • bosses"),
-      h("div", { className: "game-subtitle" }, "A React RPG — battle bugs, earn loot, level up."),
+      h("div", { className: "game-subtitle" }, "A React RPG- battle bugs, earn loot, level up."),
       h("div", { className: "game-flavor small" },
         "⚔ The world is corrupted by syntax. Your keyboard is your sword."
       )
@@ -475,7 +533,7 @@ const LaunchScreen = h("div", { className: "launch game-bg" },
       )
     ),
 
-    // Right: Profile / tip / rewards
+    // Right: Profile/tips/rewards
     h("div", { className: "game-panel" },
       h("div", { className: "game-panel-head" }, "Adventurer Profile"),
       h("div", { className: "game-panel-body" },
@@ -492,7 +550,7 @@ const LaunchScreen = h("div", { className: "launch game-bg" },
   })
 ),
 h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
-  `Level ${level} — ${xpToNext - xpIntoLevel} XP to next level`
+  `Level ${level} - ${xpToNext - xpIntoLevel} XP to next level`
 ),
 
         h("div", { className: "profile-row" },
@@ -510,17 +568,25 @@ h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
 
         h("div", { className: "menu-divider" }),
 
-        h("button", { className: "btn btn-ghost", onClick: () => setMode("howto") }, "How to Play")
+        h("button", { className: "btn btn-ghost", onClick: openHowTo }, "How to Play")
       )
     )
   )
 );
   
   const TopBar = h("div", { className: "topbar" },
-    h("div", { className: "brand" }, h("div", { className: "logo" }),
-      h("div", null, h("div", { style: { fontWeight: 700} }, "Code & Quest"),
-      h("div", { className: "small" }, "Learn React While Playing"))
-    ),
+        h("div", { className: "brand" },
+          h("img", {
+            className: "logo-img",
+            src: "code-and-quest-logo.png",
+            alt: "Code and Quest logo"
+          }),
+          h("div", null,
+            h("div", { style: { fontWeight: 700 } }, "Code & Quest"),
+            h("div", { className: "small" }, "Learn React While Playing")
+          )
+        ),
+
         h("div", { className: "small", style: { display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" } },
 
       !started && h("button", { className: "btn btn-ghost", onClick: () => setMode("launch"), style: { borderColor: mode === "launch" ? "var(--accent)" : "#2e3440" } }, "Launch"),
@@ -531,108 +597,237 @@ h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
 
       started && h("button", { className: "btn btn-ghost", onClick: () => setMode("practice"), style: { borderColor: mode === "practice" ? "var(--accent)" : "#2e3440" } }, "Practice"),
 
-      h("button", { className: "btn btn-ghost", onClick: () => setMode("howto"), style: { borderColor: mode === "howto" ? "var(--accent)" : "#2e3440" } }, "How to Play"),
-      h("button", { className: "btn btn-ghost", onClick: resetProgress }, "Reset Progress 🗑️"),
-      started && h("button", { className: "btn btn-ghost", onClick: saveLocalNow }, "Save 💾"),
-      started && h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export"),
-      started && h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import"),
+      h("button", {
+        className: "btn btn-ghost",
+        onClick: openHowTo,
+        style: { borderColor: mode === "howto" ? "var(--accent)" : "#2e3440" }
+      }, "How to Play"),
+
+      h("button", {
+        className: "btn btn-ghost",
+        onClick: openSettings,
+        style: { borderColor: mode === "settings" ? "var(--accent)" : "#2e3440" }
+      }, "Settings"),
 
       h("span", { style: { border: "1px solid #2e3440", padding: "2px 8px", borderRadius: 999 } }, `Lv ${level} • XP ${xpIntoLevel}/${xpToNext}`)
     )
   );
 
-const MapPanel = h("div", { className: "panel" },
-  h("div", { className: "head" }, "World Map"),
-  h("div", { className: "body" },
-    h("div", { className: "worldmap" },
+const MapPanel = h("div", { className: "worldmap" },
 
-      // ===== SVG paths between zones =====
-      h("svg", { className: "map-svg", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
-        MAP_LAYOUT.paths.map((p, i) => {
-          const a = MAP_LAYOUT.zones[p.from];
-          const b = MAP_LAYOUT.zones[p.to];
-          if (!a || !b) return null;
+  // ===== SVG paths between zones =====
+  h("svg", { className: "map-svg", viewBox: "0 0 100 100", preserveAspectRatio: "none" },
+    MAP_LAYOUT.paths.map((p, i) => {
+      const a = MAP_LAYOUT.zones[p.from];
+      const b = MAP_LAYOUT.zones[p.to];
+      if (!a || !b) return null;
 
-          const ax = a.x + a.w / 2;
-          const ay = a.y + a.h / 2;
-          const bx = b.x + b.w / 2;
-          const by = b.y + b.h / 2;
+      const ax = a.x + a.w / 2;
+      const ay = a.y + a.h / 2;
+      const bx = b.x + b.w / 2;
+      const by = b.y + b.h / 2;
 
-          const cx1 = ax + (bx - ax) * 0.35;
-          const cy1 = ay;
-          const cx2 = ax + (bx - ax) * 0.65;
-          const cy2 = by;
+      const cx1 = ax + (bx - ax) * 0.35;
+      const cy1 = ay;
+      const cx2 = ax + (bx - ax) * 0.65;
+      const cy2 = by;
 
-          const d = `M ${ax} ${ay} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${bx} ${by}`;
-          return h("path", { key: i, d, className: "map-path-svg" });
-        })
+      const d = `M ${ax} ${ay} C ${cx1} ${cy1}, ${cx2} ${cy2}, ${bx} ${by}`;
+      return h("path", { key: i, d, className: "map-path-svg" });
+    })
+  ),
+
+  // ===== Zone regions =====
+  zones.map(z => {
+    const zr = MAP_LAYOUT.zones[z.id];
+    if (!zr) return null;
+
+    const locked = zoneLocked(z.id);
+    const selected = currentZone === z.id;
+
+    return h(React.Fragment, { key: `zone-wrap-${z.id}` },
+
+      h("div", {
+        className:
+          "zone-label " +
+          (locked ? "locked " : "") +
+          (selected ? "selected " : ""),
+        style: {
+          left: `${zr.x + 1}%`,
+          top: `${Math.max(2, zr.y - 7)}%`,
+        }
+      },
+        h("div", { className: "zone-label-title" }, z.name),
+        h("div", { className: "zone-label-sub" }, locked ? "Locked" : `Foes: ${z.enemy}`)
       ),
 
-      // ===== Boss nodes =====
-      zones.map(z => {
-        const zr = MAP_LAYOUT.zones[z.id];
-        const pos = zr
-          ? { x: zr.x + zr.w * 0.88, y: zr.y + zr.h * 0.22 }  // boss corner
-          : null;
-          
-        if (!pos) return null;
+      h("button", {
+        key: `zone-${z.id}`,
+        className:
+          "zone-region biome-" + zr.biome +
+          (locked ? " locked" : "") +
+          (selected ? " selected" : ""),
+        style: {
+          left: `${zr.x}%`,
+          top: `${zr.y}%`,
+          width: `${zr.w}%`,
+          height: `${zr.h}%`,
+        },
+        disabled: locked,
+        onClick: () => {
+          if (locked) return;
+          setCurrentZone(z.id);
+          setCurrentLesson(zoneLessons[z.id][0]);
+          setLessonTab("learn");
+        }
+      },
+        locked && h("div", { className: "zone-lock" }, "🔒")
+      )
+    );
+  }),
 
-        const zLocked = zoneLocked(z.id);
-        const canBoss = canFightBoss(z.id);
-        const bossDone = !!completedBoss[z.id];
-        const locked = zLocked || !zoneCleared(z.id);
+  // ===== Mission nodes =====
+  zones.flatMap(z => {
+    const zid = z.id;
+    const zLocked = zoneLocked(zid);
+    const nodes = buildMissionNodesForZone(zid);
 
-        return h("button", {
-          key: `boss-${z.id}`,
-          className:
-            "boss-node " +
-            (bossDone ? "done " : "") +
-            (canBoss ? "ready " : "") +
-            (locked ? "locked " : ""),
-          style: { left: `${pos.x}%`, top: `${pos.y}%` },
-          disabled: locked || bossDone,
-          onClick: (e) => {
-            e.stopPropagation();
-            if (locked || bossDone) return;
-            enterBossRoom(z.id);
-          }
-        }, bossDone ? "🏆" : locked ? "🔒" : "👑");
-      }),
+    return nodes.map((n, idx) => {
+      const lessonId = n.lessonId;
+      const zoneIds = zoneLessons[zid] || [];
+      const lessonIndex = zoneIds.indexOf(lessonId);
 
-      // ===== Mission nodes (quests) =====
-      zones.flatMap(z => {
-        const zid = z.id;
-        const zLocked = zoneLocked(zid);
-        const nodes = buildMissionNodesForZone(zid);
+      const locked = zLocked || (lessonIndex > 0 && !completed[zoneIds[lessonIndex - 1]]);
+      const done = !!completed[lessonId];
+      const active = currentLesson === lessonId;
 
-        return nodes.map((n, idx) => {
-          const lessonId = n.lessonId;
-          const locked = zLocked || lessonLocked(lessonId);
-          const done = !!completed[lessonId];
-          const active = currentLesson === lessonId;
+      return h("button", {
+        key: `${zid}-m-${idx}`,
+        className:
+          "mission-node " +
+          (done ? "done " : "") +
+          (active ? "active " : "") +
+          (locked ? "locked " : ""),
+        style: { left: `${n.x}%`, top: `${n.y}%` },
+        disabled: locked,
+        onClick: (e) => {
+          e.stopPropagation();
+          if (locked) return;
+          setCurrentZone(zid);
+          setCurrentLesson(lessonId);
+          setLessonTab("learn");
+          setMode("play");
+        }
+      }, locked ? "🔒" : done ? "✓" : String(lessonIndex + 1));
+    });
+  }),
 
-          return h("button", {
-            key: `${zid}-m-${idx}`,
-            className:
-              "mission-node " +
-              (done ? "done " : "") +
-              (active ? "active " : "") +
-              (locked ? "locked " : ""),
-            style: { left: `${n.x}%`, top: `${n.y}%` },
-            disabled: locked,
-            onClick: (e) => {
-              e.stopPropagation();
-              if (locked) return;
-              setCurrentZone(zid);
-              setCurrentLesson(lessonId);
-              setLessonTab("learn");
-            }
-          }, locked ? "🔒" : done ? "✓" : "!");
-        });
-      })
+  // ===== Boss nodes =====
+  zones.map(z => {
+    const zr = MAP_LAYOUT.zones[z.id];
+    if (!zr) return null;
 
-    )
-  )
+    const pos = { x: zr.x + zr.w * 0.82, y: zr.y + zr.h * 0.18 };
+    const zLocked = zoneLocked(z.id);
+    const canBoss = canFightBoss(z.id);
+    const bossDone = !!completedBoss[z.id];
+    const locked = zLocked || !zoneCleared(z.id);
+
+    return h("button", {
+      key: `boss-${z.id}`,
+      className:
+        "boss-node " +
+        (bossDone ? "done " : "") +
+        (canBoss ? "ready " : "") +
+        (locked ? "locked " : ""),
+      style: { left: `${pos.x}%`, top: `${pos.y}%` },
+      disabled: locked || bossDone,
+      onClick: (e) => {
+        e.stopPropagation();
+        if (locked || bossDone) return;
+        enterBossRoom(z.id);
+      }
+    }, bossDone ? "🏆" : locked ? "🔒" : "👑");
+  }),
+
+  // ===== Final boss node =====
+  (() => {
+    const finalUnlocked = canFightFinalBoss();
+    const finalDone = !!completedBoss.final;
+
+    return h("button", {
+      key: "final-boss",
+      className:
+        "final-boss-node " +
+        (finalDone ? "done " : "") +
+        (finalUnlocked ? "ready " : "locked "),
+      style: {
+        left: "50%",
+        top: "88%",
+        transform: "translate(-50%, -50%)",
+        position: "absolute",
+        zIndex: 6,
+        width: "88px",
+        height: "88px",
+        borderRadius: "999px",
+        border: "2px solid #fbbf24",
+        background: finalDone
+          ? "rgba(16,185,129,0.22)"
+          : finalUnlocked
+          ? "rgba(251,191,36,0.16)"
+          : "rgba(100,116,139,0.16)",
+        boxShadow: finalUnlocked
+          ? "0 0 30px rgba(251,191,36,0.35)"
+          : "none",
+        fontSize: "1.8rem",
+        fontWeight: 800
+      },
+      disabled: !finalUnlocked || finalDone,
+      onClick: (e) => {
+        e.stopPropagation();
+        if (!finalUnlocked || finalDone) return;
+        enterBossRoom("final");
+      },
+      title: finalDone
+        ? "Final boss defeated"
+        : finalUnlocked
+        ? "Final boss unlocked"
+        : "Defeat all zone bosses first"
+    }, finalDone ? "🏆" : finalUnlocked ? "☠" : "🔒");
+  })(),
+
+  // ===== Final boss label =====
+  (() => {
+    const finalUnlocked = canFightFinalBoss();
+    const finalDone = !!completedBoss.final;
+
+    return h("div", {
+      style: {
+        position: "absolute",
+        left: "50%",
+        top: "95%",
+        transform: "translate(-50%, -50%)",
+        zIndex: 6,
+        textAlign: "center",
+        pointerEvents: "none"
+      }
+    },
+      h("div", {
+        style: {
+          fontWeight: 800,
+          fontSize: "0.95rem",
+          color: finalUnlocked || finalDone ? "#f8fafc" : "#94a3b8",
+          textShadow: "0 2px 10px rgba(0,0,0,0.5)"
+        }
+      }, "The Rogue Hacker"),
+      h("div", {
+        className: "small",
+        style: {
+          color: finalDone ? "#86efac" : finalUnlocked ? "#fcd34d" : "#94a3b8"
+        }
+      }, finalDone ? "Defeated ✓" : finalUnlocked ? "Final Battle" : "Locked")
+    );
+  })()
 );
 
 const LessonsList = h("div", { className: "panel" },
@@ -666,15 +861,14 @@ const LessonsList = h("div", { className: "panel" },
       },
         h("div", { style: { fontWeight: 600 } }, l?.title || id),
         h("div", { className: "small" },
-          locked ? "Locked — finish previous quest" : `${l.xp} XP`
+          locked ? "Locked - finish previous quest" : `${l.xp} XP`
         )
       );
     })
   )
 );
 
-
-  // Learn tab (story + loot + step cards + demo) — no “apply to editor”, users must type
+  // Learn tab
   function LearnPanel({ lesson }) {
     const teach = lesson.learn || [];
     const steps = lesson.steps || [];
@@ -710,7 +904,7 @@ const LessonsList = h("div", { className: "panel" },
               )
             ),
 
-        // Steps (examples only — type into the editor yourself)
+        // Steps
         steps.length > 0 && h("div", { style: { marginTop: 10 } },
           h("div", { className: "small", style: { marginBottom: 6, fontWeight: 700 } }, "Example Path (type these ideas yourself)"),
           steps.map((s, i) =>
@@ -777,7 +971,7 @@ const LessonsList = h("div", { className: "panel" },
     h("div", { className: "body" },
       Object.values(BADGE_DEFS).map(b =>
         h("div", { key: b.id, className: "small", style: { marginBottom: 6, opacity: badges[b.id] ? 1 : 0.5 } },
-          badges[b.id] ? "🏅 " : "⬜ ", b.name, " — ", b.tip
+          badges[b.id] ? "🏅 " : "⬜ ", b.name, " - ", b.tip
         )
       )
     )
@@ -803,43 +997,72 @@ const LessonsList = h("div", { className: "panel" },
           }
         },
           h("div", { style: { fontWeight: 700 } }, (owned ? "🖍️ " : "🔒 ") + c.name),
-          h("div", { className: "small" }, owned ? c.tip : "Locked — defeat bosses")
+          h("div", { className: "small" }, owned ? c.tip : "Locked - defeat bosses")
         );
       })
     )
   );
 
-  const MapPage = h("div", { className: "wrap map-only" },
+const MapPage = h("div", { className: "map-page" },
+
+  h("div", { className: "map-main panel" },
+    h("div", { className: "head" }, "World Map"),
+    h("div", { className: "body" }, MapPanel)
+  ),
+
+  h("div", { className: "map-side" },
+
     h("div", { className: "panel" },
-      h("div", { className: "head" }, "World Map"),
-      h("div", { className: "body" }, MapPanel)
+      h("div", { className: "head" }, "Travel"),
+      h("div", { className: "body map-side-actions" },
+        h("button", { className: "btn btn-primary", onClick: () => setMode("play") }, "Open Quests ▶"),
+        h("button", { className: "btn btn-ghost", onClick: saveLocalNow }, "Save 💾"),
+        h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export"),
+        h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import")
+      )
     ),
+
     h("div", { className: "panel" },
-      h("div", { className: "head" }, "Save & Travel"),
+      h("div", { className: "head" }, "Current Zone"),
       h("div", { className: "body" },
-        h("div", { style: { display: "flex", gap: 8, flexWrap: "wrap" } },
-          h("button", { className: "btn btn-primary", onClick: () => setMode("play") }, "Continue ▶"),
-          h("button", { className: "btn btn-ghost", onClick: saveLocalNow }, "Save 💾"),
-          h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export"),
-          h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import")
+        h("div", { className: "map-zone-info" },
+          h("div", { className: "map-zone-name" }, zones.find(z => z.id === currentZone)?.name || "Unknown Zone"),
+          h("div", { className: "small" }, `Quests: ${(zoneLessons[currentZone] || []).length}`),
+          h("div", { className: "small" }, `Boss: ${completedBoss[currentZone] ? "Defeated ✓" : zoneCleared(currentZone) ? "Ready" : "Locked"}`)
         )
       )
     ),
-    h("div", { style: { display: "grid", gap: 12 } }, BadgesPanel, CrayonsPanel)
-  );
 
-  const PlayMain = h("div", { className: "wrap" }, MapPanel,
-    h("div", { style: { display: "grid", gap: 12 } },
-      LessonsList,
-      LessonHeader,
-      lessonTab === "learn" ? h(LearnPanel, { lesson: activeLesson }) :
-      h("div", null, QuestPanel, EditorPanel)
-    ),
-      h("div", { style: { display: "grid", gap: 12 } }, BadgesPanel, CrayonsPanel)
-  );
+    BadgesPanel,
+    CrayonsPanel
+  )
+);
+
+const PlayMain = h("div", { className: "quest-page" },
+
+  h("div", { className: "quest-left" },
+    LessonsList
+  ),
+
+  h("div", { className: "quest-main" },
+    LessonHeader,
+    lessonTab === "learn"
+      ? h(LearnPanel, { lesson: activeLesson })
+      : h("div", null, QuestPanel, EditorPanel)
+  ),
+
+  h("div", { className: "quest-right" },
+    BadgesPanel,
+    CrayonsPanel
+  )
+);
 
   /* ================== Boss Room ================== */
   function canFightBoss(zid) { return !!bosses[zid] && zoneCleared(zid) && !completedBoss[zid]; }
+
+  function canFightFinalBoss() {
+  return !!completedBoss.zone1 && !!completedBoss.zone2 && !!completedBoss.zone3 && !completedBoss.final;
+}
 
   function enterBossRoom(zid) {
   const b = bosses[zid];
@@ -863,7 +1086,7 @@ const LessonsList = h("div", { className: "panel" },
       ["ok", `Phase 1/${phases.length}: ${phases[0].title}`],
     ]);
   } else {
-    // fallback to old single-stage bosses (if any)
+    // fallback to old single stage bosses 
     setBossHP(b.hp);
     setBossCode(b.starter);
     setBossLog([["ok", `⚔ ${b.name} appears!`], ...(b.intro || []).map(t => ["ok", t])]);
@@ -875,7 +1098,7 @@ const LessonsList = h("div", { className: "panel" },
 
 function bossStrike() {
 
-// Anti-spam lock: require code change before striking again
+// Antispam lock: requires code change before striking again
   if (bossCode.trim() === lastBossCodeSnapshot.trim()) {
   setBossLog(prev => [
     ...prev,
@@ -889,7 +1112,7 @@ function bossStrike() {
   const b = bosses[bossZone];
   const stages = b.stages && b.stages.length ? b.stages : null;
 
-  // If no stages, can keep old logic (but upgrading zone1 to stages)
+  // If no stages, can keep old logic
   const stage = stages ? stages[bossPhase] : null;
   const errs = stage?.checks ? stage.checks(bossCode) : (b.checks ? b.checks(bossCode) : []);
 
@@ -904,16 +1127,16 @@ function bossStrike() {
       const totalPhases = stages.length;
       const nextPhase = bossPhase + 1;
 
-      // Deal “phase damage”
+      // Deal damage
       const nextBossHP = Math.max(0, bossHP - 10);
       setBossHP(nextBossHP);
 
-      // If there is another phase → swap tasks
+      // If there is another phase, then swap tasks
       if (nextPhase < totalPhases) {
         setBossPhase(nextPhase);
         setBossCode(stages[nextPhase].starter);
 
-        // Reset anti-spam lock for new phase
+        // Reset antispam lock for new phase
       setLastBossCodeSnapshot("");
 
         setBossLog(prev => [
@@ -924,17 +1147,27 @@ function bossStrike() {
         return;
       }
 
-      // All phases cleared → victory
+      // All phases cleared to victory
       setCompletedBoss(map => ({ ...map, [bossZone]: true }));
       setXp(x => x + (b.rewardXp || 0));
       if (!playerTookDamage) grantBadge("PERFECT_BOSS");
 
-      const zoneBadge =
-        bossZone === "zone1" ? "ZONE1_CLEAR" :
-        bossZone === "zone2" ? "ZONE2_CLEAR" : "ZONE3_CLEAR";
-      grantBadge(zoneBadge);
+      if (bossZone === "zone1") grantBadge("ZONE1_CLEAR");
+      if (bossZone === "zone2") grantBadge("ZONE2_CLEAR");
+      if (bossZone === "zone3") grantBadge("ZONE3_CLEAR");
+      if (bossZone === "final") grantBadge("FINAL_CLEAR");
 
-      const scene = (window.cutscenes && window.cutscenes[bossZone]) || ["The corruption fades."];
+            const scene =
+        bossZone === "final"
+          ? [
+              "The Rogue Hacker staggers as the broken code around him begins to dissolve.",
+              "The Render Engine stabilizes. Zones reconnect. The world stops flickering.",
+              "The Mentor steps forward. “You did more than defeat a boss. You learned how the system works.”",
+              "The last corruption fades into harmless light.",
+              "Victory. Code & Quest is restored."
+            ]
+          : (window.cutscenes && window.cutscenes[bossZone]) || ["The corruption fades."];
+
       setSceneLines(scene);
       setScenePtr(0);
       setMode("cutscene");
@@ -955,7 +1188,7 @@ function bossStrike() {
     return;
   }
 
-// failure: damage + log errors
+// failure: damage and log errors
 const dmgIn = Math.min(12, 3 + 2 * errs.length);
 
 setBossLog(prev => [
@@ -1008,7 +1241,7 @@ function leaveBossRoom() {
     );
   }
 
-  // ---- Boss derived data (MUST be outside h(...) calls) ----
+  // ---- Boss derived data ----
   const bossObj = bossZone ? bosses[bossZone] : null;
   const bossStages = bossObj?.stages && bossObj.stages.length ? bossObj.stages : null;
   const bossMaxHP = bossObj
@@ -1036,9 +1269,9 @@ const BossMain = (() => {
 
 return h("div", { className: "wrap boss-wrap" },
 
-  // LEFT: HP / phase info
+  // LEFT: HP/phase info
   h("div", { className: "panel" },
-    h("div", { className: "head" }, `Boss Room — ${b.name}`),
+    h("div", { className: "head" }, `Boss Room - ${b.name}`),
     h("div", { className: "body" },
       h(Bar, { label: "You", value: playerHP, max: 20 }),
       h(Bar, { label: `Boss (${b.name})`, value: bossHP, max: bossMaxHP }),
@@ -1049,7 +1282,7 @@ return h("div", { className: "wrap boss-wrap" },
     )
   ),
 
-  // CENTER: Editor + Preview + Console (main fight area)
+  // CENTER: Editor + Preview + Console
   h("div", { className: "panel boss-arena" },
     h("div", { className: "head" }, "Battle Console"),
     h("div", { className: "body", style: { borderBottom: "1px solid #2e3440", paddingBottom: 8, display: "flex", gap: 8 } },
@@ -1072,7 +1305,7 @@ return h("div", { className: "wrap boss-wrap" },
     )
   ),
 
-  // RIGHT: Goals (support panel)
+  // RIGHT: Goals
   h("div", { className: "panel" },
     h("div", { className: "head" }, "Boss Objectives"),
     h("div", { className: "body" },
@@ -1083,7 +1316,6 @@ return h("div", { className: "wrap boss-wrap" },
   )
 );
 })();
-
 
   // Cutscene
   const Cutscene = h("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,.85)", display: "grid", placeItems: "center", zIndex: 60 } },
@@ -1106,28 +1338,129 @@ return h("div", { className: "wrap boss-wrap" },
   );
 
   // How To Play tab content
-  const HowToPanel = h("div", { className: "wrap" },
-    h("div", { className: "panel" },
-      h("div", { className: "head" }, "How to Play"),
-      h("div", { className: "body" },
-        h("ol", { className: "small", style: { paddingLeft: 18, margin: 0 } }, [
-          h("li", { key: 1, style: { marginBottom: 6 } }, "Choose a zone on the left and pick a quest."),
-          h("li", { key: 2, style: { marginBottom: 6 } }, "Open the Learn tab: read story, see examples, understand the goal."),
-          h("li", { key: 3, style: { marginBottom: 6 } }, "Type code in the editor yourself (no auto-paste)."),
-          h("li", { key: 4, style: { marginBottom: 6 } }, "Switch to the Quest tab, press Submit ✅ to check."),
-          h("li", { key: 5, style: { marginBottom: 6 } }, "Beat the zone’s boss after clearing all quests."),
-        ])
+const HowToPanel = h("div", { className: "howto-page" },
+  
+
+  h("div", { className: "panel howto-main" },
+    h("div", { className: "head" }, "How to Play"),
+    h("div", { className: "body howto-grid" },
+
+      h("div", { className: "howto-hero" },
+        h("div", { className: "howto-title" }, "Welcome, Debugger"),
+        h("div", { className: "small" },
+          "Your goal is to restore the Render Engine by clearing quests, defeating bosses, and unlocking new zones."
+        )
+      ),
+
+      h("div", { className: "howto-card" },
+        h("div", { className: "howto-card-title" }, "1. Explore the Map"),
+        h("p", { className: "small" },
+          "Start on the World Map. Click a zone to view its path of quests. Locked zones open only after defeating the previous zone boss."
+        )
+      ),
+
+      h("div", { className: "howto-card" },
+        h("div", { className: "howto-card-title" }, "2. Learn First"),
+        h("p", { className: "small" },
+          "Open each quest and read the Learn tab. It explains the React concept with examples and story context."
+        )
+      ),
+
+      h("div", { className: "howto-card" },
+        h("div", { className: "howto-card-title" }, "3. Complete the Quest"),
+        h("p", { className: "small" },
+          "Switch to the Quest tab, type your code yourself, and press Submit ✅. Finish quests in order to unlock the next node."
+        )
+      ),
+
+      h("div", { className: "howto-card" },
+        h("div", { className: "howto-card-title" }, "4. Defeat the Boss"),
+        h("p", { className: "small" },
+          "When every quest in a zone is cleared, the boss node unlocks. Beat the boss to open the next biome and earn rewards."
+        )
+      ),
+
+      h("div", { className: "howto-card" },
+        h("div", { className: "howto-card-title" }, "5. Save Your Progress"),
+        h("p", { className: "small" },
+          "Use Settings to save, export, import, or reset your run. Auto-save can also be toggled there."
+        )
+      ),
+
+      h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 16 } },
+        h("button", { className: "btn btn-ghost", onClick: goBackFromMenuPage }, "Back")
       )
     )
-  );
+  )
+);
 
-  // First-run How-To pop-up
+  const SettingsPanel = h("div", { className: "settings-page" },
+
+  h("div", { className: "panel settings-main" },
+    h("div", { className: "head" }, "Settings"),
+    h("div", { className: "body settings-grid" },
+
+      h("div", { className: "settings-card" },
+        h("div", { className: "settings-card-title" }, "Save Data"),
+        h("div", { className: "small", style: { marginBottom: 12 } },
+          "Manage your current progress and move saves between devices."
+        ),
+        h("div", { className: "settings-actions" },
+          h("button", {
+            className: "btn btn-primary",
+            onClick: saveLocalNow,
+            disabled: !started
+          }, "Save Now 💾"),
+
+          h("button", {
+            className: "btn btn-ghost",
+            onClick: exportSaveFile,
+            disabled: !started
+          }, "Export Save"),
+
+          h("button", {
+            className: "btn btn-ghost",
+            onClick: openImportDialog
+          }, "Import Save")
+        )
+      ),
+
+      h("div", { className: "settings-card" },
+        h("div", { className: "settings-card-title" }, "Game Options"),
+        h("label", {
+          className: "small",
+          style: { display: "flex", gap: 10, alignItems: "center", marginTop: 8 }
+        },
+          h("input", {
+            type: "checkbox",
+            checked: autoSave,
+            onChange: e => setAutoSave(e.target.checked)
+          }),
+          "Auto-save to this device"
+        )
+      ),
+
+      h("div", { className: "settings-card danger-card" },
+        h("div", { className: "settings-card-title" }, "Danger Zone"),
+        h("div", { className: "small", style: { marginBottom: 12 } },
+          "This permanently clears local progress, badges, crayons, and saved settings."
+        ),
+        h("button", { className: "btn btn-ghost danger-btn", onClick: resetProgress }, "Reset Progress 🗑️")
+      ),
+      h("div", { style: { display: "flex", justifyContent: "flex-end", marginTop: 16 } },
+       h("button", { className: "btn btn-ghost", onClick: goBackFromMenuPage }, "Back")
+        )
+    )
+  )
+);
+
+  // First run How To popup
   const HowToOverlay = !showHowTo ? null : h("div", { style: { position: "fixed", inset: 0, background: "rgba(0,0,0,0.8)", display: "grid", placeItems: "center", zIndex: 55 } },
     h("div", { style: { width: 560, maxWidth: "90vw", borderRadius: 16, border: "1px solid #2e3440", background: "#0c1526", padding: 16, boxShadow: "0 20px 60px rgba(0,0,0,.5)" } },
       h("div", { style: { fontSize: 22, fontWeight: 800, marginBottom: 8 } }, "How to Play"),
       h("ol", { className: "small", style: { paddingLeft: 18, marginTop: 6 } }, [
         h("li", { key: 1, style: { marginBottom: 6 } }, "Pick a quest → read Learn → type code in the editor."),
-        h("li", { key: 2, style: { marginBottom: 6 } }, "Learn examples may differ slightly from Quest goals—adjust!"),
+        h("li", { key: 2, style: { marginBottom: 6 } }, "Learn examples may differ slightly from Quest goals-adjust!"),
         h("li", { key: 3, style: { marginBottom: 6 } }, "Submit to check; use Hint if stuck; reset editor if needed."),
       ]),
       h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:12}},
@@ -1144,7 +1477,7 @@ return h("div", { className: "wrap boss-wrap" },
       h("div",{style:{display:"flex",gap:8,justifyContent:"flex-end",marginTop:12}},
         h("button",{className:"btn btn-primary", onClick: () => {localStorage.setItem("cq_intro_ack", "1");
     setShowIntro(false);
-    // Show the How-To overlay one time (new game only)
+    // Show the How To overlay one time
       const hasSave = !!localStorage.getItem(SAVE_KEY);
           if (!hasSave) {
             setShowHowTo(true);
@@ -1167,22 +1500,24 @@ return h("div", { className: "wrap boss-wrap" },
 return h("div", null,
   TopBar,
 
-  mode === "howto" ? HowToPanel :
-  !started ? LaunchScreen :
-  mode === "map"     ? MapPage :
-  mode === "play"    ? PlayMain :
+  mode === "howto"    ? HowToPanel :
+  mode === "settings" ? SettingsPanel :
+  !started            ? LaunchScreen :
+  mode === "map"      ? MapPage :
+  mode === "play"     ? PlayMain :
   mode === "practice" ? h("div", { className: "wrap" },
     h("div", { className: "panel" },
       h("div", { className: "head" }, "Practice Arena"),
       h("div", { className: "body" }, h("p", { className:"small" }, "Practice mode will return in the next update.")))
   )
   : mode === "boss"     ? BossMain
-  : mode === "cutscene" ? Cutscene : null,
+  : mode === "cutscene" ? Cutscene
+  : LaunchScreen,
 
   HiddenFileInput,
   HowToOverlay,
   IntroOverlay
-  );
+);
 }
 
 /* ======================= mount ======================= */
