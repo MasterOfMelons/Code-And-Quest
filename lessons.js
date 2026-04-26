@@ -413,13 +413,34 @@ ReactDOM.createRoot(document.getElementById('root'))
     starter: `// Follow Learn, but your Quest must greet Mack.
 `,
     checks(code) {
-      if (/DevWins123/.test(code)) return [];
-      const errs = [];
-      if (!/function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code)) errs.push("Define Greeting({ name }).");
-      if (!/<Greeting\s+name=\\"?['"]?Mack['"]?\\"?\s*\/>/.test(code)) errs.push('Render <Greeting name="Mack" />.');
-      if (!/<h2>\s*Hello,\s*Mack\s*<\/h2>/.test(code)) errs.push("Output <h2>Hello, Mack</h2>.");
-      return errs;
-    },
+  if (/DevWins123/.test(code)) return [];
+
+  const errs = [];
+
+  const hasGreetingFunction =
+    /function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code);
+
+  const rendersGreetingMack =
+    /<Greeting\s+name\s*=\s*["']Mack["']\s*\/\s*>/.test(code);
+
+  const outputsHelloMack =
+    /<h2>\s*Hello,\s*Mack\s*<\/h2>/.test(code) ||
+    /<h2>\s*Hello,\s*\{\s*name\s*\}\s*<\/h2>/.test(code);
+
+  if (!hasGreetingFunction) {
+    errs.push("Define Greeting({ name }).");
+  }
+
+  if (!rendersGreetingMack) {
+    errs.push('Render <Greeting name="Mack" />.');
+  }
+
+  if (!outputsHelloMack) {
+    errs.push("Output <h2>Hello, Mack</h2> or <h2>Hello, {name}</h2>.");
+  }
+
+  return errs;
+},
     xp: 25,
   },
 
@@ -474,14 +495,40 @@ ReactDOM.createRoot(document.getElementById('root'))
     starter: `// Build a chest that shows its contents. Quest requires title="Log" with one <p>Entry</p>.
 `,
     checks(code){
-      if (/DevWins123/.test(code)) return [];
-      const errs = [];
-      if (!/function\s+Panel\s*\(\s*\{\s*title\s*,\s*children\s*\}\s*\)/.test(code)) errs.push("Define Panel({ title, children }).");
-      if (!/<h3>\s*\{title\}\s*<\/h3>/.test(code)) errs.push("Panel must show <h3>{title}</h3>.");
-      if (!/\{\s*children\s*\}/.test(code)) errs.push("Panel must include {children}.");
-      if (!/<Panel\s+title=\\"?['"]?Log['"]?\\"?\s*>\s*<p>\s*Entry\s*<\/p>\s*<\/Panel>/.test(code)) errs.push('Render <Panel title="Log"><p>Entry</p></Panel>.');
-      return errs;
-    },
+  if (/DevWins123/.test(code)) return [];
+
+  const errs = [];
+
+  const hasPanelFunction =
+    /function\s+Panel\s*\(\s*\{\s*title\s*,\s*children\s*\}\s*\)/.test(code);
+
+  const showsTitle =
+    /<h3>\s*\{\s*title\s*\}\s*<\/h3>/.test(code);
+
+  const showsChildren =
+    /\{\s*children\s*\}/.test(code);
+
+  const rendersPanelLog =
+    /<Panel\s+title\s*=\s*["']Log["']\s*>\s*<p>\s*Entry\s*<\/p>\s*<\/Panel>/s.test(code);
+
+  if (!hasPanelFunction) {
+    errs.push("Define Panel({ title, children }).");
+  }
+
+  if (!showsTitle) {
+    errs.push("Panel must show <h3>{title}</h3>.");
+  }
+
+  if (!showsChildren) {
+    errs.push("Panel must include {children}.");
+  }
+
+  if (!rendersPanelLog) {
+    errs.push('Render <Panel title="Log"><p>Entry</p></Panel>.');
+  }
+
+  return errs;
+},
     xp: 30,
   },
 
@@ -1725,20 +1772,40 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Card title="Victory" />);
 `,
         checks(code){
-          if (/DevWins123/.test(code)) return [];
-          const e = [];
+            if (/DevWins123/.test(code)) return [];
 
-          if(!/function\s+Card\s*\(\s*\{\s*title\s*\}\s*\)/.test(code)) e.push("Define Card({ title }).");
-          if(!/<h2>\s*\{title\}\s*<\/h2>/.test(code)) e.push("Return <h2>{title}</h2> (not hardcoded).");
-          if(!/<Card\s+title=\\"?['"]?Champion['"]?\\"?\s*\/>/.test(code)) e.push('Render <Card title="Champion" />.');
+            const e = [];
 
-          const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\([\s\S]*<Card[\s\S]*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\([\s\S]*<Card[\s\S]*\)/s.test(code));
-          if(!ok) e.push("Use createRoot(...).render(...) correctly.");
+            const hasCardFunction =
+              /function\s+Card\s*\(\s*\{\s*title\s*\}\s*\)/.test(code);
 
-          return e;
-        }
+            const returnsTitle =
+              /<h2>\s*\{\s*title\s*\}\s*<\/h2>/.test(code);
+
+            const rendersChampion =
+              /<Card\s+title\s*=\s*["']Champion["']\s*\/\s*>/.test(code);
+
+            const usesCreateRoot =
+              /ReactDOM\.createRoot\s*\(/.test(code) && /\.render\s*\(/.test(code);
+
+            if (!hasCardFunction) {
+              e.push("Define Card({ title }).");
+            }
+
+            if (!returnsTitle) {
+              e.push("Return <h2>{title}</h2>.");
+            }
+
+            if (!rendersChampion) {
+              e.push('Render <Card title="Champion" />.');
+            }
+
+            if (!usesCreateRoot) {
+              e.push("Use createRoot(...).render(...) correctly.");
+          }
+
+  return e;
+},
       },
 
       {
@@ -1764,24 +1831,47 @@ const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(<Panel title="Report" />);
 `,
         checks(code){
-          if (/DevWins123/.test(code)) return [];
-          const e = [];
+            if (/DevWins123/.test(code)) return [];
 
-          if(!/function\s+Panel\s*\(\s*\{\s*title\s*,\s*children\s*\}\s*\)/.test(code)) e.push("Define Panel({ title, children }).");
-          if(!/<h3>\s*\{title\}\s*<\/h3>/.test(code)) e.push("Panel must show <h3>{title}</h3>.");
-          if(!/\{\s*children\s*\}/.test(code)) e.push("Panel must include {children}.");
+            const e = [];
 
-          if(!/<Panel\s+title=\\"?['"]?Report['"]?\\"?\s*>\s*<p>\s*Status\s*<\/p>\s*<p>\s*Green\s*<\/p>\s*<\/Panel>/s.test(code)) {
-            e.push('Render <Panel title="Report"><p>Status</p><p>Green</p></Panel>.');
-          }
+            const hasPanelFunction =
+              /function\s+Panel\s*\(\s*\{\s*title\s*,\s*children\s*\}\s*\)/.test(code);
 
-          const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<Panel[\s\S]*<\/Panel>\s*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<Panel[\s\S]*<\/Panel>\s*\)/s.test(code));
-          if(!ok) e.push("Use createRoot(...).render(...) to show Panel.");
+            const showsTitle =
+              /<h3>\s*\{\s*title\s*\}\s*<\/h3>/.test(code);
 
-          return e;
-        }
+            const showsChildren =
+              /\{\s*children\s*\}/.test(code);
+
+            const rendersReport =
+              /<Panel\s+title\s*=\s*["']Report["']\s*>\s*<p>\s*Status\s*<\/p>\s*<p>\s*Green\s*<\/p>\s*<\/Panel>/s.test(code);
+
+            const usesCreateRoot =
+              /ReactDOM\.createRoot\s*\(/.test(code) && /\.render\s*\(/.test(code);
+
+            if (!hasPanelFunction) {
+              e.push("Define Panel({ title, children }).");
+            }
+
+            if (!showsTitle) {
+              e.push("Panel must show <h3>{title}</h3>.");
+            }
+
+            if (!showsChildren) {
+              e.push("Panel must include {children}.");
+            }
+
+            if (!rendersReport) {
+              e.push('Render <Panel title="Report"><p>Status</p><p>Green</p></Panel>.');
+            }
+
+            if (!usesCreateRoot) {
+              e.push("Use createRoot(...).render(...) to show Panel.");
+            }
+
+            return e;
+          },
       },
 
       {
@@ -2170,20 +2260,49 @@ root.render(<Greeting />);
 `,
         checks(code){
           if (/DevWins123/.test(code)) return [];
+
           const e = [];
 
-          if(!/function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code)) e.push("Define Greeting({ name }).");
-          if(!/<h2>\s*Hello,\s*\{name\}\s*<\/h2>/.test(code)) e.push("Greeting must return <h2>Hello, {name}</h2>.");
-          if(!/function\s+App\s*\(/.test(code)) e.push("Define App().");
-          if(!/<Greeting\s+name=\\"?['"]?Debugger['"]?\\"?\s*\/>/.test(code)) e.push('App must render <Greeting name="Debugger" />.');
+          const hasGreetingFunction =
+            /function\s+Greeting\s*\(\s*\{\s*name\s*\}\s*\)/.test(code);
 
-          const ok =
-            /ReactDOM\.createRoot\(.+?\)\s*\.render\(\s*<App\s*\/>\s*\)/s.test(code) ||
-            (/ReactDOM\.createRoot\(.+?\)/s.test(code) && /\.render\(\s*<App\s*\/>\s*\)/s.test(code));
-          if(!ok) e.push("Render <App /> with createRoot(...).render(...).");
+          const returnsName =
+            /<h2>\s*Hello,\s*\{\s*name\s*\}\s*<\/h2>/.test(code);
+
+          const hasAppFunction =
+            /function\s+App\s*\(/.test(code);
+
+          const rendersDebugger =
+            /<Greeting\s+name\s*=\s*["']Debugger["']\s*\/\s*>/.test(code);
+
+          const rendersApp =
+            /\.render\s*\(\s*<App\s*\/>\s*\)/s.test(code);
+
+          const usesCreateRoot =
+            /ReactDOM\.createRoot\s*\(/.test(code);
+
+          if (!hasGreetingFunction) {
+            e.push("Define Greeting({ name }).");
+          }
+
+          if (!returnsName) {
+            e.push("Greeting must return <h2>Hello, {name}</h2>.");
+          }
+
+          if (!hasAppFunction) {
+            e.push("Define App().");
+          }
+
+          if (!rendersDebugger) {
+            e.push('App must render <Greeting name="Debugger" />.');
+          }
+
+          if (!(usesCreateRoot && rendersApp)) {
+            e.push("Render <App /> with createRoot(...).render(...).");
+          }
 
           return e;
-        }
+        },
       },
 
       {
