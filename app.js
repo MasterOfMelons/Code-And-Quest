@@ -1097,18 +1097,6 @@ const PlayMain = h("div", { className: "quest-page" },
 
 
 function bossStrike() {
-
-// Antispam lock: requires code change before striking again
-  if (bossCode.trim() === lastBossCodeSnapshot.trim()) {
-  setBossLog(prev => [
-    ...prev,
-    ["bad", "Make a change before striking again."]
-  ]);
-  return;
-}
-
-  setLastBossCodeSnapshot(bossCode);
-
   const b = bosses[bossZone];
   const stages = b.stages && b.stages.length ? b.stages : null;
 
