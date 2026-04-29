@@ -103,8 +103,20 @@ const [showHowTo, setShowHowTo] = React.useState(false);
   const [activeCrayon, setActiveCrayon] = React.useState("SKY");
 
   // ===== Launch screen derived UI (must be in App scope) =====
-const hasLocalSave = !!localStorage.getItem(SAVE_KEY);
-const badgeCount = Object.keys(badges || {}).length;
+const localSavePreview = safeJsonParse(localStorage.getItem(SAVE_KEY), null);
+const hasLocalSave = !!localSavePreview;
+
+// If game has not started yet, show saved profile preview on launch screen.
+// If already started, show live React state.
+const displayXp = started ? xp : (localSavePreview?.xp ?? xp);
+const displayBadges = started ? badges : (localSavePreview?.badges ?? badges);
+const displayCrayon = started ? activeCrayon : (localSavePreview?.activeCrayon ?? activeCrayon);
+
+const displayLevel = getLevelFromXp(displayXp);
+const displayXpIntoLevel = getXpIntoLevel(displayXp);
+const displayXpToNext = getXpForNextLevel();
+
+const badgeCount = Object.keys(displayBadges || {}).length;
 
 const tips = [
   "Tip: Read Learn, but match Quest goals exactly.",
@@ -112,7 +124,7 @@ const tips = [
   "Tip: No-Hint Hero badge rewards clean clears.",
   "Tip: Practice your JSX like a blade form.",
 ];
-const tipOfTheDay = tips[(xp + badgeCount) % tips.length];
+const tipOfTheDay = tips[(displayXp + badgeCount) % tips.length];
 
 
 
@@ -365,7 +377,22 @@ function resetProgress() {
 }
 
   function exportSaveFile() {
-    const data = JSON.stringify(makeSaveObject(), null, 2);
+    let saveData;
+
+    if (!started) {
+      const existingSave = safeJsonParse(localStorage.getItem(SAVE_KEY), null);
+
+      if (!existingSave) {
+        alert("No save found to export yet. Start or load a game first.");
+        return;
+      }
+
+      saveData = existingSave;
+    } else {
+      saveData = makeSaveObject();
+    }
+
+    const data = JSON.stringify(saveData, null, 2);
     const blob = new Blob([data], { type: "application/json" });
     const url = URL.createObjectURL(blob);
 
@@ -377,7 +404,7 @@ function resetProgress() {
     a.remove();
 
     URL.revokeObjectURL(url);
-  }
+}
 
   function openImportDialog() {
     fileInputRef.current && fileInputRef.current.click();
@@ -394,6 +421,7 @@ function resetProgress() {
         alert("That save file couldn't be read.");
         return;
       }
+      localStorage.setItem(SAVE_KEY, JSON.stringify(s));
       applySave(s);
       setMode("map");
       setStarted(true);
@@ -513,7 +541,7 @@ const LaunchScreen = h("div", { className: "launch game-bg" },
         h("div", { className: "menu-divider" }),
 
         h("button", { className: "btn btn-ghost", onClick: loadLocalSave, disabled: !hasLocalSave }, "Load Local Save"),
-        h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export Save File"),
+        h("button", { className: "btn btn-ghost", onClick: exportSaveFile }, "Export Local File"),
         h("button", { className: "btn btn-ghost", onClick: openImportDialog }, "Import Save File"),
 
         h("div", { className: "menu-divider" }),
@@ -540,26 +568,28 @@ const LaunchScreen = h("div", { className: "launch game-bg" },
 
         h("div", { className: "profile-row" },
           h("div", { className: "profile-label" }, "XP"),
-          h("div", { className: "profile-value" }, String(xp))
+          h("div", { className: "profile-value" }, String(displayXp))
         ),
 
         h("div", { className: "xp-bar" },
-      h("div", {
-          className: "xp-fill",
-            style: { width: (xpIntoLevel / xpToNext * 100) + "%" }
-  })
-),
-h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
-  `Level ${level} - ${xpToNext - xpIntoLevel} XP to next level`
-),
+          h("div", {
+            className: "xp-fill",
+            style: { width: (displayXpIntoLevel / displayXpToNext * 100) + "%" }
+          })
+        ),
+
+        h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
+          `Level ${displayLevel} - ${displayXpToNext - displayXpIntoLevel} XP to next level`
+        ),
 
         h("div", { className: "profile-row" },
           h("div", { className: "profile-label" }, "Badges"),
           h("div", { className: "profile-value" }, String(badgeCount))
         ),
+
         h("div", { className: "profile-row" },
           h("div", { className: "profile-label" }, "Crayon"),
-          h("div", { className: "profile-value" }, activeCrayon)
+          h("div", { className: "profile-value" }, displayCrayon)
         ),
 
         h("div", { className: "menu-divider" }),
@@ -609,7 +639,7 @@ h("div", { className: "small", style: { marginTop: 6, opacity: 0.9 } },
         style: { borderColor: mode === "settings" ? "var(--accent)" : "#2e3440" }
       }, "Settings"),
 
-      h("span", { style: { border: "1px solid #2e3440", padding: "2px 8px", borderRadius: 999 } }, `Lv ${level} • XP ${xpIntoLevel}/${xpToNext}`)
+          h("span", { style: { border: "1px solid #2e3440", padding: "2px 8px", borderRadius: 999 } }, `Lv ${displayLevel} • XP ${displayXpIntoLevel}/${displayXpToNext}`)
     )
   );
 
